@@ -1,0 +1,41 @@
+{
+  "name": "chanshige/whois",
+  "description": "'chanshige/whois' is that helps your domain registered information(whois) search.",
+  "keywords": [
+    "whois",
+    "domain"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Shigeki Tanaka",
+      "email": "dev@shigeki.tokyo"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Chanshige\\": "src/",
+      "Connect\\": "src/Connect",
+      "Exception\\": "src/Exception"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Chanshige\\": "tests/",
+      "Connect\\": "tests/Connect"
+    }
+  },
+  "require": {
+    "php": ">=5.6",
+    "respect/validation": "^1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~5.2"
+  },
+  "scripts": {
+    "test": [
+      "phpunit"
+    ]
+  }
+}
