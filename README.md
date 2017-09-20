@@ -4,7 +4,7 @@ domain registered information(whois) search. It internally uses Respect/Validati
 ## Installation
 With Composer
 ```
-$ composer require chanshige/whois '^0.0.1'
+$ composer require chanshige/whois 'v0.0.1'
 ```
 
 ## usage
