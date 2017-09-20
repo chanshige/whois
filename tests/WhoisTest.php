@@ -47,7 +47,7 @@ class WhoisTest extends CommonTestCase
         try {
             $this->whois->query('aaa.com', 'whois.icann.org');
         } catch (\Exception $e) {
-            $this->assertEquals('[No route to host] Connection to whois.icann.org failed.', $e->getMessage());
+            $this->assertEquals('[Network is unreachable] Connection to whois.icann.org failed.', $e->getMessage());
         }
     }
 }
