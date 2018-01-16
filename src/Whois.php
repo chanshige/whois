@@ -2,7 +2,6 @@
 namespace Chanshige;
 
 use Chanshige\Factory\FactoryInterface;
-use Chanshige\Validator\Query;
 use Connect\Socket;
 use Exception\InvalidWhoisRequestException;
 
@@ -34,10 +33,6 @@ class Whois
      */
     public function query($domain, $server)
     {
-        if (Query::validate($domain, $server)) {
-            throw new InvalidWhoisRequestException('Invalid input.');
-        }
-
         try {
             $response = $this->socket->open($server)
                 ->puts($domain)

@@ -2,12 +2,12 @@
 [![Coverage Status](https://coveralls.io/repos/github/chanshige/whois/badge.svg?branch=master)](https://coveralls.io/github/chanshige/whois?branch=master)
 
 # chanshige/whois
-domain registered information(whois) search. It internally uses Respect/Validation.
+domain registered information(whois) search.
 
 ## Installation
 With Composer
 ```
-$ composer require chanshige/whois 'v0.0.1'
+$ composer require chanshige/whois 'v0.0.2'
 ```
 
 ## usage
