@@ -38,16 +38,7 @@ class WhoisTest extends CommonTestCase
         try {
             $this->whois->query('aaa.com', 'localhost');
         } catch (\Exception $e) {
-            $this->assertEquals('Invalid input.', $e->getMessage());
-        }
-    }
-
-    public function testFailedConnection()
-    {
-        try {
-            $this->whois->query('aaa.com', 'whois.icann.org');
-        } catch (\Exception $e) {
-            $this->assertEquals('[Network is unreachable] Connection to whois.icann.org failed.', $e->getMessage());
+            $this->assertEquals('[Connection refused] Connection to localhost failed.', $e->getMessage());
         }
     }
 }
