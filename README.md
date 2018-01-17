@@ -7,7 +7,7 @@ domain registered information(whois) search.
 ## Installation
 With Composer
 ```
-$ composer require chanshige/whois 'v0.0.2'
+$ composer require chanshige/whois 'v0.1.0'
 ```
 
 ## usage
@@ -15,14 +15,16 @@ $ composer require chanshige/whois 'v0.0.2'
 <?php
 require __DIR__ . '/vendor/autoload.php';
 
-use Chanshige\Whois;
 use Chanshige\Factory\Connect;
+use Chanshige\Whois;
+use Chanshige\Whois\ResponseBuilder\TemplateBuilder;
 
-$whois = new Whois(new Connect());
+$whois = new Whois(new Connect(), new TemplateBuilder());
 
 try {
+    /** @var TemplateBuilder $result */
     $result = $whois->query('shigeki.tokyo', 'whois.nic.tokyo');
-    echo implode("<br>", $result);
+    echo implode("<br>", $result());
 } catch (Exception $e) {
     echo $e->getMessage();
 }
