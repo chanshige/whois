@@ -4,8 +4,6 @@ namespace Chanshige\Whois\ResponseBuilder;
 /**
  * Class TemplateBuilder
  *
- * @method array registrant();
- *
  * @package Chanshige\Whois\ResponseBuilder
  */
 class TemplateBuilder implements BuilderInterface
