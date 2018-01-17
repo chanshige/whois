@@ -2,6 +2,7 @@
 namespace Chanshige;
 
 use Chanshige\Factory\FactoryInterface;
+use Chanshige\Whois\ResponseBuilder\BuilderInterface;
 use Connect\Socket;
 use Exception\InvalidWhoisRequestException;
 
@@ -14,21 +15,19 @@ class Whois
 {
     /** @var Socket */
     private $socket;
+    /** @var BuilderInterface */
+    private $responseBuilder;
 
-    /**
-     * Whois constructor.
-     *
-     * @param FactoryInterface $factory
-     */
-    public function __construct(FactoryInterface $factory)
+    public function __construct(FactoryInterface $factory, BuilderInterface $builder)
     {
         $this->socket = $factory->create();
+        $this->responseBuilder = $builder;
     }
 
     /**
      * @param string $domain domain name
      * @param string $server whois server
-     * @return array
+     * @return BuilderInterface
      * @throws InvalidWhoisRequestException
      */
     public function query($domain, $server)
@@ -42,6 +41,6 @@ class Whois
             throw new InvalidWhoisRequestException($e->getMessage(), $e->getCode());
         }
 
-        return $response;
+        return $this->responseBuilder->build($response);
     }
 }
