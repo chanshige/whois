@@ -2,6 +2,7 @@
 namespace Chanshige;
 
 use Chanshige\Factory\Connect;
+use Chanshige\Whois\ResponseBuilder\TemplateBuilder;
 
 class WhoisTest extends CommonTestCase
 {
@@ -11,7 +12,7 @@ class WhoisTest extends CommonTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->whois = new Whois(new Connect());
+        $this->whois = new Whois(new Connect(), new TemplateBuilder());
     }
 
     protected function tearDown()
@@ -22,6 +23,7 @@ class WhoisTest extends CommonTestCase
 
     public function testQuery()
     {
+        /** @var TemplateBuilder $response */
         $response = $this->whois->query(
             'jprs.jp',
             'whois.jprs.jp'
@@ -29,7 +31,7 @@ class WhoisTest extends CommonTestCase
 
         $this->assertEquals(
             '[ JPRS database provides information on network administration. Its use is    ]',
-            $response[0]
+            $response()[0]
         );
     }
 
