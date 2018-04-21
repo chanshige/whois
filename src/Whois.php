@@ -61,11 +61,10 @@ final class Whois implements WhoisInterface
             $this->result = $this->socket->open($servername)
                 ->puts(convertIdnAscii($domain))
                 ->read();
-
             $this->socket->close();
 
-            if (!$this->recursive && in_array($tld, Config::load('recursive_tld'), true)) {
-                $this->queryRecursive($domain);
+            if ($this->isRecursiveQueryDomain($domain)) {
+                return $this->queryRecursive($domain);
             }
         } catch (\Exception $e) {
             throw new InvalidWhoisRequestException($e->getMessage(), $e->getCode());
@@ -85,6 +84,8 @@ final class Whois implements WhoisInterface
     public function withQuery(string $domain, string $servername = ''): WhoisInterface
     {
         $clone = clone $this;
+        $clone->recursive = false;
+        $clone->result = [];
         $clone->query($domain, $servername);
 
         return $clone;
@@ -185,9 +186,20 @@ final class Whois implements WhoisInterface
     }
 
     /**
+     * @param string $domain
+     * @return bool
+     */
+    private function isRecursiveQueryDomain(string $domain)
+    {
+        return !$this->recursive && $this->isRegistered() &&
+            in_array(tld($domain), Config::load('recursive_tld'), true);
+    }
+
+    /**
      * Request Whois query recursive.
      *
      * @param string $domain
+     * @return self
      * @throws InvalidWhoisRequestException
      */
     private function queryRecursive(string $domain)
@@ -199,6 +211,6 @@ final class Whois implements WhoisInterface
             throw new InvalidWhoisRequestException(self::$errorCodes[902], 902);
         }
 
-        $this->query($domain, $servername);
+        return $this->query($domain, $servername);
     }
 }
