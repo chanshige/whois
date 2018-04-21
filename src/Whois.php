@@ -75,6 +75,22 @@ final class Whois implements WhoisInterface
     }
 
     /**
+     * Return an instance with Request Whois query.
+     *
+     * @param string $domain
+     * @param string $servername
+     * @return WhoisInterface
+     * @throws InvalidWhoisRequestException
+     */
+    public function withQuery(string $domain, string $servername = ''): WhoisInterface
+    {
+        $clone = clone $this;
+        $clone->query($domain, $servername);
+
+        return $clone;
+    }
+
+    /**
      * Is Registered Domain.
      *
      * @return bool
@@ -159,8 +175,8 @@ final class Whois implements WhoisInterface
      */
     private function findServerNameFromIana(string $tld): string
     {
-        $this->query($tld, 'whois.iana.org');
-        $servername = current((array)preg_filter('/^whois:\s+/', '', $this->result));
+        $whois = $this->withQuery($tld, 'whois.iana.org');
+        $servername = current((array)preg_filter('/^whois:\s+/', '', $whois->raw()));
         if (!$servername) {
             throw new InvalidWhoisRequestException(self::$errorCodes[903], 903);
         }
