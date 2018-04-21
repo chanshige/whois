@@ -1,4 +1,4 @@
-not_found:
+no_registration_words:
  - 'No match for'
  - 'NOT FOUND'
  - 'No Data Found'
@@ -6,13 +6,19 @@ not_found:
  - 'does not exist'
  - 'No match!!'
 
-reserved:
+reserved_words:
  - 'reserved name'
  - 'Reserved Domain'
  - 'registry reserved'
  - 'has been reserved'
 
-cctld:
+recursive_tld:
+ - com
+ - net
+ - cc
+ - tv
+
+cctld_list:
  - jp
  - co.jp
  - or.jp
