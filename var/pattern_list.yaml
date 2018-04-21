@@ -1,0 +1,108 @@
+not_found:
+ - 'No match for'
+ - 'NOT FOUND'
+ - 'No Data Found'
+ - 'has not been registered'
+ - 'does not exist'
+ - 'No match!!'
+
+reserved:
+ - 'reserved name'
+ - 'Reserved Domain'
+ - 'registry reserved'
+ - 'has been reserved'
+
+cctld:
+ - jp
+ - co.jp
+ - or.jp
+ - ac.jp
+ - ed.jp
+ - go.jp
+ - hokkaido.jp
+ - miyagi.jp
+ - fukushima.jp
+ - aomori.jp
+ - iwate.jp
+ - yamagata.jp
+ - akita.jp
+ - tokyo.jp
+ - kanagawa.jp
+ - saitama.jp
+ - chiba.jp
+ - ibaraki.jp
+ - gunma.jp
+ - tochigi.jp
+ - niigata.jp
+ - nagano.jp
+ - yamanashi.jp
+ - aichi.jp
+ - shizuoka.jp
+ - gifu.jp
+ - ishikawa.jp
+ - toyama.jp
+ - fukui.jp
+ - osaka.jp
+ - hyogo.jp
+ - kyoto.jp
+ - nara.jp
+ - mie.jp
+ - shiga.jp
+ - wakayama.jp
+ - hiroshima.jp
+ - okayama.jp
+ - yamaguchi.jp
+ - shimane.jp
+ - tottori.jp
+ - ehime.jp
+ - kagawa.jp
+ - tokushima.jp
+ - kochi.jp
+ - fukuoka.jp
+ - kumamoto.jp
+ - kagoshima.jp
+ - nagasaki.jp
+ - oita.jp
+ - miyazaki.jp
+ - saga.jp
+ - okinawa.jp
+ - ac
+ - am
+ - be
+ - bz
+ - cc
+ - cm
+ - cn
+ - co
+ - cx
+ - cz
+ - fm
+ - gs
+ - hn
+ - in
+ - la
+ - me
+ - mn
+ - ms
+ - mu
+ - mx
+ - sc
+ - so
+ - com.so
+ - org.so
+ - net.so
+ - tv
+ - tw
+ - co.uk
+ - me.uk
+ - org.uk
+ - us
+ - vc
+ - vg
+ - vn
+ - ws
+ - pw
+ - com.co
+ - net.co
+ - nom.co
+ - id
