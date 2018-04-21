@@ -7,7 +7,7 @@ domain registered information(whois) search.
 ## Installation
 With Composer
 ```
-$ composer require chanshige/whois 'v0.1.0'
+$ composer require chanshige/whois 'v1.0.0'
 ```
 
 ## usage
@@ -15,28 +15,26 @@ $ composer require chanshige/whois 'v0.1.0'
 <?php
 require __DIR__ . '/vendor/autoload.php';
 
-use Chanshige\Whois;
-
-$whois = new Whois();
+$whois = new \Chanshige\Whois();
 
 try {
-    $result = $whois->query('shigeki.tokyo', 'whois.nic.tokyo');
-    var_dump($result->result());
+    $whois->query('shigeki.tokyo', 'whois.nic.tokyo');
+    var_dump($whois->result());
 } catch (Exception $e) {
     var_dump($e->getMessage());
 }
 ```
 #### result type
-- isRegistered \
+- isRegistered() \
 登録済みドメインかどうか(bool)
 
-- isReserved \
+- isReserved() \
 予約文字列かどうか(bool)
 
-- isClientHold \
+- isClientHold() \
 ClientHoldとなっているかどうか(bool)
 
-- result \
+- result() \
 上3つとWHOISを細分化したデータを返す(array)
 ```
 'registered' => bool,
@@ -53,7 +51,7 @@ ClientHoldとなっているかどうか(bool)
 ]
 ```
 
-- raw
+- raw() \
 加工せず取得したデータのまま返す(array)
 
 ## test (with coverage)
