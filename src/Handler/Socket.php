@@ -19,6 +19,12 @@ final class Socket implements SocketInterface
     /** @var int $timeout sec */
     private $timeout = 3;
 
+    /** @var int $errno */
+    private $errno;
+
+    /** @var string $errStr error message */
+    private $errStr;
+
     /** @var array $errorCodes */
     private static $errorCodes = [
         10 => 'Failed to open socket connection.',
@@ -61,9 +67,9 @@ final class Socket implements SocketInterface
      */
     public function open(string $host): SocketInterface
     {
-        $resource = @fsockopen($host, $this->port, $errNo, $errMsg, $this->timeout);
+        $resource = @fsockopen($host, $this->port, $this->errno, $this->errStr, $this->timeout);
         if (!$resource) {
-            throw new SocketExecutionException("[{$errMsg}] " . self::$errorCodes[10], $errNo);
+            throw new SocketExecutionException(self::$errorCodes[10], 10);
         }
         $this->resource = $resource;
 
@@ -81,7 +87,7 @@ final class Socket implements SocketInterface
     {
         $res = @fputs($this->resource, "{$value}\r\n");
         if (!$res) {
-            throw new SocketExecutionException(self::$errorCodes[11]);
+            throw new SocketExecutionException(self::$errorCodes[11], 11);
         }
 
         return $this;
@@ -99,7 +105,7 @@ final class Socket implements SocketInterface
         while (!feof($this->resource)) {
             $data[] = trim($buffer = fgets($this->resource));
             if ($buffer === false) {
-                throw new SocketExecutionException(self::$errorCodes[12]);
+                throw new SocketExecutionException(self::$errorCodes[12], 12);
             }
         }
 

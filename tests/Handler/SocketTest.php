@@ -37,7 +37,7 @@ class SocketTest extends CommonTestCase
         try {
             $this->socket->open('localhost');
         } catch (SocketExecutionException $e) {
-            $this->assertEquals('[Connection refused] Failed to open socket connection.', $e->getMessage());
+            $this->assertEquals('Failed to open socket connection.', $e->getMessage());
         }
     }
 
@@ -48,6 +48,17 @@ class SocketTest extends CommonTestCase
             $this->socket->puts('verisign-grs.com');
         } catch (SocketExecutionException $e) {
             $this->assertEquals('Write to socket failed.', $e->getMessage());
+        }
+    }
+
+    public function testReadFailed()
+    {
+        try {
+            $this->socket->open('whois.nic.tokyo');
+            $this->socket->read();
+            $this->socket->close();
+        } catch (SocketExecutionException $e) {
+            $this->assertEquals('Read from socket failed.', $e->getMessage());
         }
     }
 }

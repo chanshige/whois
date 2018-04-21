@@ -8,8 +8,8 @@
  * file that was distributed with this source code.
  */
 
-/** @const VAR_DIR */
-const CHANSHIGE_WHOIS_APP_VAR_DIR = __DIR__ . '/var/';
+/** @const BASE_DIR */
+const CHANSHIGE_WHOIS_APP_DIR = __DIR__ . '/';
 
 /**
  * Extract Tld From DomainName.

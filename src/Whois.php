@@ -19,10 +19,9 @@ final class Whois implements WhoisInterface
 
     /** @var array */
     private static $errorCodes = [
-        900 => '[900] Whois query failed.',
-        901 => '[901] Failed to get whois server.',
-        902 => '[902] Failed to find whois server from registrar database.',
-        903 => '[903] Failed to find whois server from iana database.',
+        900 => 'Whois query failed.',
+        902 => 'Failed to find whois server from registrar database.',
+        903 => 'Failed to find whois server from iana database.',
     ];
 
     /** @var array $result */
@@ -39,34 +38,37 @@ final class Whois implements WhoisInterface
             $socket = new \Handler\Socket();
         }
 
-        if (!$socket instanceof SocketInterface) {
-            throw new \InvalidArgumentException('Expected a SocketInterface');
-        }
-
         $this->socket = $socket;
     }
 
     /**
      * Request Whois query.
      *
-     * @param string $domain domain name
-     * @param string $server whois server
+     * @param string $domain     domain name
+     * @param string $servername whois server
      * @return Whois
      * @throws InvalidWhoisRequestException
      */
-    public function query(string $domain, string $server = ''): WhoisInterface
+    public function query(string $domain, string $servername = ''): WhoisInterface
     {
         try {
-            $this->result = $this->socket->open($server ?: $this->findServer(tld($domain)))
+            $tld = tld($domain);
+
+            if (strlen($servername) === 0) {
+                $servername = $this->searchFromServerList($tld) ?: $this->findServerNameFromIana($tld);
+            }
+
+            $this->result = $this->socket->open($servername)
                 ->puts(convertIdnAscii($domain))
                 ->read();
-            $this->socket->close();
-        } catch (\Exception $e) {
-            throw new InvalidWhoisRequestException(self::$errorCodes[900], 900);
-        }
 
-        if (!$this->recursive && in_array(tld($domain), Config::get('recursive_tld'))) {
-            $this->queryRecursive($domain);
+            $this->socket->close();
+
+            if (!$this->recursive && in_array($tld, Config::load('recursive_tld'), true)) {
+                $this->queryRecursive($domain);
+            }
+        } catch (\Exception $e) {
+            throw new InvalidWhoisRequestException($e->getMessage(), $e->getCode());
         }
 
         return $this;
@@ -79,7 +81,7 @@ final class Whois implements WhoisInterface
      */
     public function isRegistered(): bool
     {
-        $pattern = implode("|", Config::get('no_registration_words'));
+        $pattern = implode("|", Config::load('no_registration_words'));
 
         return count(preg_grep("/{$pattern}/mi", $this->result)) === 0;
     }
@@ -91,7 +93,7 @@ final class Whois implements WhoisInterface
      */
     public function isReserved(): bool
     {
-        $pattern = implode("|", Config::get('reserved_words'));
+        $pattern = implode("|", Config::load('reserved_words'));
 
         return count(preg_grep("/{$pattern}/mi", $this->result)) > 0;
     }
@@ -140,51 +142,47 @@ final class Whois implements WhoisInterface
     }
 
     /**
-     * Find whois server name.
-     *
-     * @param string $tld
+     * @param $tld
      * @return string
      */
-    private function findServer($tld): string
+    private function searchFromServerList($tld): string
     {
-        $serverName = Config::serverList($tld);
-        if (!is_null($serverName)) {
-            return $serverName;
+        $lists = Config::load('server_list');
+        // Null Coalescing Operator
+        return $lists[$tld] ?? '';
+    }
+
+    /**
+     * @param $tld
+     * @return string
+     * @throws InvalidWhoisRequestException
+     */
+    private function findServerNameFromIana($tld): string
+    {
+        $this->query($tld, 'whois.iana.org');
+        $servername = current((array)preg_filter('/^whois:\s+/', '', $this->result));
+        if (!$servername) {
+            throw new InvalidWhoisRequestException(self::$errorCodes[903], 903);
         }
 
-        try {
-            $this->query($tld, 'whois.iana.org');
-            $key = key(preg_grep('/^whois:/', $this->raw()));
-            if (is_null($key)) {
-                throw new InvalidWhoisRequestException(self::$errorCodes[903], 903);
-            }
-            return trim(str_replace('whois:', '', $this->result[$key]));
-        } catch (InvalidWhoisRequestException $exception) {
-            throw new $exception(self::$errorCodes[901], 901);
-        }
+        return $servername;
     }
 
     /**
      * Request Whois query recursive.
      *
-     * @param string $domain
+     * @param $domain
+     * @throws InvalidWhoisRequestException
      */
     private function queryRecursive($domain)
     {
         $this->recursive = true;
 
-        try {
-            $key = key(preg_grep('/Whois Server:/mi', $this->result));
-            if (is_null($key)) {
-                throw new InvalidWhoisRequestException(self::$errorCodes[902], 902);
-            }
-
-            $this->query(
-                $domain,
-                (string)trim(str_replace('Registrar WHOIS Server:', '', $this->result[$key]))
-            );
-        } catch (InvalidWhoisRequestException $exception) {
-            throw new $exception(self::$errorCodes[900], 900);
+        $servername = current((array)preg_filter('/(.*)Whois Server:\s+/i', '', $this->result));
+        if (!$servername) {
+            throw new InvalidWhoisRequestException(self::$errorCodes[902], 902);
         }
+
+        $this->query($domain, $servername);
     }
 }

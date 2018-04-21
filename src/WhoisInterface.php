@@ -10,10 +10,10 @@ interface WhoisInterface
 {
     /**
      * @param string $domain
-     * @param string $server
+     * @param string $servername
      * @return WhoisInterface
      */
-    public function query(string $domain, string $server = ''): WhoisInterface;
+    public function query(string $domain, string $servername = ''): WhoisInterface;
 
     /**
      * @return bool
