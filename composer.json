@@ -17,18 +17,18 @@
   "autoload": {
     "psr-4": {
       "Chanshige\\": "src/",
-      "Connect\\": "src/Connect",
+      "Handler\\": "src/Handler",
       "Exception\\": "src/Exception"
     }
   },
   "autoload-dev": {
     "psr-4": {
       "Chanshige\\": "tests/",
-      "Connect\\": "tests/Connect"
+      "Handler\\": "tests/Handler"
     }
   },
   "require": {
-    "php": ">=5.6"
+    "php": ">=7.1"
   },
   "require-dev": {
     "phpunit/phpunit": "~5.2"
