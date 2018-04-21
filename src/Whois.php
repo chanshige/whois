@@ -142,10 +142,10 @@ final class Whois implements WhoisInterface
     }
 
     /**
-     * @param $tld
+     * @param string $tld
      * @return string
      */
-    private function searchFromServerList($tld): string
+    private function searchFromServerList(string $tld): string
     {
         $lists = Config::load('server_list');
         // Null Coalescing Operator
@@ -153,11 +153,11 @@ final class Whois implements WhoisInterface
     }
 
     /**
-     * @param $tld
+     * @param string $tld
      * @return string
      * @throws InvalidWhoisRequestException
      */
-    private function findServerNameFromIana($tld): string
+    private function findServerNameFromIana(string $tld): string
     {
         $this->query($tld, 'whois.iana.org');
         $servername = current((array)preg_filter('/^whois:\s+/', '', $this->result));
@@ -171,10 +171,10 @@ final class Whois implements WhoisInterface
     /**
      * Request Whois query recursive.
      *
-     * @param $domain
+     * @param string $domain
      * @throws InvalidWhoisRequestException
      */
-    private function queryRecursive($domain)
+    private function queryRecursive(string $domain)
     {
         $this->recursive = true;
 
