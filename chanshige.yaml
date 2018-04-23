@@ -27,7 +27,7 @@ recursive_tld:
  - cc
  - tv
 
-cctld_list:
+raw_only_tld:
  - jp
  - co.jp
  - or.jp
@@ -85,41 +85,17 @@ cctld_list:
  - am
  - be
  - bz
- - cc
  - cm
  - cn
- - co
- - cx
  - cz
- - fm
  - gs
- - hn
- - in
- - la
- - me
- - mn
- - ms
  - mu
  - mx
- - sc
- - so
- - com.so
- - org.so
- - net.so
- - tv
- - tw
  - co.uk
  - me.uk
  - org.uk
- - us
- - vc
  - vg
  - vn
- - ws
- - pw
- - com.co
- - net.co
- - nom.co
  - id
 
 server_list:
