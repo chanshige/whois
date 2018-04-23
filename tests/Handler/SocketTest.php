@@ -1,5 +1,5 @@
 <?php
-namespace Connect;
+namespace Handler;
 
 use Chanshige\CommonTestCase;
 use Exception\SocketExecutionException;
@@ -23,12 +23,12 @@ class SocketTest extends CommonTestCase
     public function testSocket()
     {
         $response = $this->socket
-            ->open('whois.nic.tokyo')
-            ->puts('nic.tokyo')
+            ->open('whois.verisign-grs.com')
+            ->puts('verisign-grs.com')
             ->read();
 
         $this->assertTrue(is_array($response));
-        $this->assertEquals("Domain Name: NIC.TOKYO", $response[0]);
+        $this->assertEquals("Domain Name: VERISIGN-GRS.COM", $response[0]);
         $this->assertTrue($this->socket->close());
     }
 
@@ -37,17 +37,28 @@ class SocketTest extends CommonTestCase
         try {
             $this->socket->open('localhost');
         } catch (SocketExecutionException $e) {
-            $this->assertEquals('[Connection refused] Connection to localhost failed.', $e->getMessage());
+            $this->assertEquals('Failed to open socket connection.', $e->getMessage());
         }
     }
 
     public function testPutsFailed()
     {
         try {
-            $this->socket->open('whois.nic.tokyo')->close();
-            $this->socket->puts('nic.tokyo');
+            $this->socket->open('whois.verisign-grs.com')->close();
+            $this->socket->puts('verisign-grs.com');
         } catch (SocketExecutionException $e) {
-            $this->assertEquals('Cannot write to nic.tokyo.', $e->getMessage());
+            $this->assertEquals('Write to socket failed.', $e->getMessage());
+        }
+    }
+
+    public function testReadFailed()
+    {
+        try {
+            $this->socket->open('whois.nic.tokyo');
+            $this->socket->read();
+            $this->socket->close();
+        } catch (SocketExecutionException $e) {
+            $this->assertEquals('Read from socket failed.', $e->getMessage());
         }
     }
 }
