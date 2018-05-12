@@ -20,6 +20,9 @@ class WhoisTest extends CommonTestCase
         $this->whois = null;
     }
 
+    /**
+     * @throws \Exception\InvalidWhoisRequestException
+     */
     public function testQueryRaw()
     {
         $response = $this->whois->query(
@@ -33,6 +36,9 @@ class WhoisTest extends CommonTestCase
         );
     }
 
+    /**
+     * @throws \Exception\InvalidWhoisRequestException
+     */
     public function testQueryResult()
     {
         $response = $this->whois->query(
@@ -46,29 +52,29 @@ class WhoisTest extends CommonTestCase
             'client_hold' => false,
             'detail' => [
                 'registrant' => [
-                    13 => 'Registrant Name: NIC',
-                    14 => 'Registrant Organization: NIC',
+                    'Registrant Name: NIC',
+                    'Registrant Organization: NIC',
                 ],
                 'admin' => [
-                    16 => 'Admin Name: Semonche, Douglas',
-                    17 => 'Admin Organization: Network Infiormation Center (NIC), LLC',
+                    'Admin Name: Semonche, Douglas',
+                    'Admin Organization: Network Infiormation Center (NIC), LLC',
                 ],
                 'tech' => [
-                    19 => 'Tech Name: Semonche, Douglas',
-                    20 => 'Tech Organization: Network Infiormation Center (NIC), LLC',
+                    'Tech Name: Semonche, Douglas',
+                    'Tech Organization: Network Infiormation Center (NIC), LLC',
                 ],
                 'billing' => [],
                 'status' => [
-                    11 => 'Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited',
+                    'Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited',
                 ],
                 'date' => [
-                    6 => 'Updated Date: 2018-03-02T17:00:22Z',
-                    7 => 'Creation Date: 1994-02-07T05:00:00Z',
-                    8 => 'Registrar Registration Expiration Date: 2028-02-08T05:00:00Z',
+                    'Updated Date: 2018-03-02T17:00:22Z',
+                    'Creation Date: 1994-02-07T05:00:00Z',
+                    'Registrar Registration Expiration Date: 2028-02-08T05:00:00Z',
                 ],
                 'name_server' => [
-                    21 => 'Name Server: BACKUP.NIC.COM',
-                    22 => 'Name Server: SUE.NIC.COM',
+                    'Name Server: BACKUP.NIC.COM',
+                    'Name Server: SUE.NIC.COM',
                 ]
             ]
         ];
@@ -76,26 +82,29 @@ class WhoisTest extends CommonTestCase
         $this->assertEquals($expected, $response->result());
     }
 
+    /**
+     * @expectedException \Exception\InvalidWhoisRequestException
+     * @expectedExceptionMessage Failed to find whois server from iana database.
+     */
     public function testFailedQueryByIana()
     {
         $whois = new Whois();
-        try {
-            $whois->query('domains.gmo')->raw();
-        } catch (\Exception $e) {
-            $this->assertEquals('Failed to find whois server from iana database.', $e->getMessage());
-        }
+        $whois->query('domains.gmo')->raw();
     }
 
+    /**
+     * @expectedException \Exception\InvalidWhoisRequestException
+     * @expectedExceptionMessage Failed to open socket connection.
+     */
     public function testFailedQuery()
     {
         $whois = new Whois();
-        try {
-            $whois->query('aaa.com', 'VERISIGN-GRS.COM');
-        } catch (\Exception $e) {
-            $this->assertEquals('Failed to open socket connection.', $e->getMessage());
-        }
+        $whois->query('aaa.com', 'VERISIGN-GRS.COM');
     }
 
+    /**
+     * @throws \Exception\InvalidWhoisRequestException
+     */
     public function testQueryWithOutStub()
     {
         $whois = new Whois();

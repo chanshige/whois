@@ -7,7 +7,7 @@ domain registered information(whois) search. It internally uses Symfony Yaml Com
 ## Installation
 With Composer
 ```
-$ composer require chanshige/whois 'v1.0.0'
+$ composer require chanshige/whois 'v1.0.1'
 ```
 
 ## usage

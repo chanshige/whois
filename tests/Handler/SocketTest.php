@@ -2,7 +2,6 @@
 namespace Handler;
 
 use Chanshige\CommonTestCase;
-use Exception\SocketExecutionException;
 
 class SocketTest extends CommonTestCase
 {
@@ -20,6 +19,9 @@ class SocketTest extends CommonTestCase
         parent::tearDown();
     }
 
+    /**
+     * @throws \Exception\SocketExecutionException
+     */
     public function testSocket()
     {
         $response = $this->socket
@@ -32,33 +34,33 @@ class SocketTest extends CommonTestCase
         $this->assertTrue($this->socket->close());
     }
 
+    /**
+     * @expectedException \Exception\SocketExecutionException
+     * @expectedExceptionMessage Failed to open socket connection.
+     */
     public function testOpenFailed()
     {
-        try {
-            $this->socket->open('localhost');
-        } catch (SocketExecutionException $e) {
-            $this->assertEquals('Failed to open socket connection.', $e->getMessage());
-        }
+        $this->socket->open('localhost');
     }
 
+    /**
+     * @expectedException \Exception\SocketExecutionException
+     * @expectedExceptionMessage Write to socket failed.
+     */
     public function testPutsFailed()
     {
-        try {
-            $this->socket->open('whois.verisign-grs.com')->close();
-            $this->socket->puts('verisign-grs.com');
-        } catch (SocketExecutionException $e) {
-            $this->assertEquals('Write to socket failed.', $e->getMessage());
-        }
+        $this->socket->open('whois.verisign-grs.com')->close();
+        $this->socket->puts('verisign-grs.com');
     }
 
+    /**
+     * @expectedException \Exception\SocketExecutionException
+     * @expectedExceptionMessage Read from socket failed.
+     */
     public function testReadFailed()
     {
-        try {
-            $this->socket->open('whois.nic.tokyo');
-            $this->socket->read();
-            $this->socket->close();
-        } catch (SocketExecutionException $e) {
-            $this->assertEquals('Read from socket failed.', $e->getMessage());
-        }
+        $this->socket->open('whois.nic.tokyo');
+        $this->socket->read();
+        $this->socket->close();
     }
 }
