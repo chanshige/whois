@@ -24,6 +24,12 @@ final class Whois implements WhoisInterface
         903 => 'Failed to find whois server from iana database.',
     ];
 
+    /** @var string $domain */
+    private $domain = '';
+
+    /** @var string $tld */
+    private $tld = '';
+
     /** @var array $result */
     private $result = [];
 
@@ -52,19 +58,20 @@ final class Whois implements WhoisInterface
     public function query(string $domain, string $servername = ''): WhoisInterface
     {
         try {
-            $tld = tld($domain);
+            $this->domain = convertIdnAscii($domain);
+            $this->tld = tld($domain);
 
             if (strlen($servername) === 0) {
-                $servername = $this->searchFromServerList($tld) ?: $this->findServerNameFromIana($tld);
+                $servername = $this->searchFromServerList() ?: $this->findServerNameFromIana();
             }
 
             $this->result = $this->socket->open($servername)
-                ->puts(convertIdnAscii($domain))
+                ->puts($this->domain)
                 ->read();
             $this->socket->close();
 
-            if ($this->isRecursiveQueryDomain($domain)) {
-                return $this->queryRecursive($domain);
+            if ($this->isRecursiveQueryDomain()) {
+                return $this->queryRecursive();
             }
         } catch (\Exception $e) {
             throw new InvalidWhoisRequestException($e->getMessage(), $e->getCode());
@@ -85,6 +92,8 @@ final class Whois implements WhoisInterface
     {
         $clone = clone $this;
         $clone->recursive = false;
+        $clone->domain = '';
+        $clone->tld = '';
         $clone->result = [];
         $clone->query($domain, $servername);
 
@@ -126,6 +135,18 @@ final class Whois implements WhoisInterface
     }
 
     /**
+     * Only have a Raw Data.
+     * 一般的なWhoisフォーマットを持たないTLDを示す
+     * (.jp/.be/.uk etc...)
+     *
+     * @return bool
+     */
+    public function hasRawOnlyResult(): bool
+    {
+        return in_array($this->tld, Config::load('raw_only_tld'));
+    }
+
+    /**
      * WhoisInformation Detail.
      *
      * @return array
@@ -133,6 +154,8 @@ final class Whois implements WhoisInterface
     public function result(): array
     {
         return [
+            'domain_name' => $this->domain,
+            'tld' => $this->tld,
             'registered' => $this->isRegistered(),
             'reserved' => $this->isReserved(),
             'client_hold' => $this->isClientHold(),
@@ -159,24 +182,22 @@ final class Whois implements WhoisInterface
     }
 
     /**
-     * @param string $tld
      * @return string
      */
-    private function searchFromServerList(string $tld): string
+    private function searchFromServerList(): string
     {
         $lists = Config::load('server_list');
         // Null Coalescing Operator
-        return $lists[$tld] ?? '';
+        return $lists[$this->tld] ?? '';
     }
 
     /**
-     * @param string $tld
      * @return string
      * @throws InvalidWhoisRequestException
      */
-    private function findServerNameFromIana(string $tld): string
+    private function findServerNameFromIana(): string
     {
-        $whois = $this->withQuery($tld, 'whois.iana.org');
+        $whois = $this->withQuery($this->tld, 'whois.iana.org');
         $servername = current((array)preg_filter('/^whois:\s+/', '', $whois->raw()));
         if (!$servername) {
             throw new InvalidWhoisRequestException(self::$errorCodes[903], 903);
@@ -186,23 +207,21 @@ final class Whois implements WhoisInterface
     }
 
     /**
-     * @param string $domain
      * @return bool
      */
-    private function isRecursiveQueryDomain(string $domain)
+    private function isRecursiveQueryDomain()
     {
         return !$this->recursive && $this->isRegistered() &&
-            in_array(tld($domain), Config::load('recursive_tld'), true);
+            in_array($this->tld, Config::load('recursive_tld'), true);
     }
 
     /**
      * Request Whois query recursive.
      *
-     * @param string $domain
      * @return self
      * @throws InvalidWhoisRequestException
      */
-    private function queryRecursive(string $domain)
+    private function queryRecursive()
     {
         $this->recursive = true;
 
@@ -211,6 +230,6 @@ final class Whois implements WhoisInterface
             throw new InvalidWhoisRequestException(self::$errorCodes[902], 902);
         }
 
-        return $this->query($domain, $servername);
+        return $this->query($this->domain, $servername);
     }
 }

@@ -38,6 +38,11 @@ interface WhoisInterface
     public function isClientHold(): bool;
 
     /**
+     * @return bool
+     */
+    public function hasRawOnlyResult(): bool;
+
+    /**
      * @return array
      */
     public function result(): array;
