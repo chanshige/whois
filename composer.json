@@ -25,9 +25,6 @@
     }
   },
   "autoload-dev": {
-    "files": [
-      "extend.functions.php"
-    ],
     "psr-4": {
       "Chanshige\\": "tests/",
       "Handler\\": "tests/Handler"

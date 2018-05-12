@@ -46,3 +46,16 @@ function convertIdnUnicode(string $value): string
 {
     return idn_to_utf8($value, 0, INTL_IDNA_VARIANT_UTS46);
 }
+
+/**
+ * Return array entries that match the pattern
+ *
+ * @param string $pattern
+ * @param array  $input
+ * @param int    $flags
+ * @return array
+ */
+function preg_grep_values($pattern, array $input, $flags = 0)
+{
+    return array_values(preg_grep($pattern, $input, $flags));
+}

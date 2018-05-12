@@ -137,13 +137,13 @@ final class Whois implements WhoisInterface
             'reserved' => $this->isReserved(),
             'client_hold' => $this->isClientHold(),
             'detail' => [
-                'registrant' => preg_grep('/^Registrant/', $this->result),
-                'admin' => preg_grep('/^Admin/', $this->result),
-                'tech' => preg_grep('/^Tech/', $this->result),
-                'billing' => preg_grep('/^Billing/', $this->result),
-                'status' => preg_grep('/^(.*)Status:/', $this->result),
-                'date' => preg_grep('/^(.*)Date:/', $this->result),
-                'name_server' => preg_grep('/^Name Server/', $this->result)
+                'registrant' => preg_grep_values('/^Registrant/', $this->result),
+                'admin' => preg_grep_values('/^Admin/', $this->result),
+                'tech' => preg_grep_values('/^Tech/', $this->result),
+                'billing' => preg_grep_values('/^Billing/', $this->result),
+                'status' => preg_grep_values('/^(.*)Status:/', $this->result),
+                'date' => preg_grep_values('/^(.*)Date:/', $this->result),
+                'name_server' => preg_grep_values('/^Name Server/', $this->result)
             ]
         ];
     }

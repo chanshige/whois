@@ -11,7 +11,7 @@ use Symfony\Component\Yaml\Yaml;
 final class Config
 {
     /** @var string filename */
-    private const FILENAME = 'chanshige.yaml';
+    private const FILENAME = 'configure.yaml';
 
     /**
      * @param string $key
