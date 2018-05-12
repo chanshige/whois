@@ -47,6 +47,8 @@ class WhoisTest extends CommonTestCase
         );
 
         $expected = [
+            'domain_name' => 'chanshige.com.stub',
+            'tld' => 'com.stub',
             'registered' => true,
             'reserved' => false,
             'client_hold' => false,
