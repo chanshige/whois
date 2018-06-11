@@ -14,6 +14,7 @@ no_registration_words:
  - 'has not been registered'
  - 'does not exist'
  - 'No match!!'
+ - 'available for registration'
 
 reserved_words:
  - 'reserved name'
