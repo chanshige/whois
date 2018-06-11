@@ -52,7 +52,8 @@ ClientHoldとなっているかどうか(bool)
    'status' => array(),
    'date' => array(),
    'name_server' => array(),
-]
+],
+'raw' => array()
 ```
 
 - raw() \
@@ -60,7 +61,7 @@ ClientHoldとなっているかどうか(bool)
 
 - hasRawOnlyResult() \
 raw()のみで結果を確認する必要があるtldかどうか(bool) \
-※ result()で表現できないフォーマットがあるため、判定材料に利用してください。 \
+※ result()で表現できないフォーマットがあるため、判定材料に利用してください。 
 
 ## test (with coverage)
 `$ composer test`

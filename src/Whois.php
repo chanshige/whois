@@ -14,8 +14,8 @@ final class Whois implements WhoisInterface
     /** @var SocketInterface */
     private $socket;
 
-    /** @var bool $recursive */
-    private $recursive = false;
+    /** @var bool $hasRegistrar */
+    private $hasRegistrar = false;
 
     /** @var array */
     private static $errorCodes = [
@@ -30,8 +30,8 @@ final class Whois implements WhoisInterface
     /** @var string $tld */
     private $tld = '';
 
-    /** @var array $result */
-    private $result = [];
+    /** @var array $response */
+    private $response = [];
 
     /**
      * Whois constructor.
@@ -65,13 +65,13 @@ final class Whois implements WhoisInterface
                 $servername = $this->searchFromServerList() ?: $this->findServerNameFromIana();
             }
 
-            $this->result = $this->socket->open($servername)
+            $this->response = $this->socket->open($servername)
                 ->puts($this->domain)
                 ->read();
             $this->socket->close();
 
-            if ($this->isRecursiveQueryDomain()) {
-                return $this->queryRecursive();
+            if ($this->isRequestRegistrarWhois()) {
+                return $this->requestRegistrarWhois();
             }
         } catch (\Exception $e) {
             throw new InvalidWhoisRequestException($e->getMessage(), $e->getCode());
@@ -91,10 +91,10 @@ final class Whois implements WhoisInterface
     public function withQuery(string $domain, string $servername = ''): WhoisInterface
     {
         $clone = clone $this;
-        $clone->recursive = false;
+        $clone->hasRegistrar = false;
         $clone->domain = '';
         $clone->tld = '';
-        $clone->result = [];
+        $clone->response = [];
         $clone->query($domain, $servername);
 
         return $clone;
@@ -109,7 +109,7 @@ final class Whois implements WhoisInterface
     {
         $pattern = implode("|", Config::load('no_registration_words'));
 
-        return count(preg_grep("/{$pattern}/mi", $this->result)) === 0;
+        return count(preg_grep("/{$pattern}/mi", $this->response)) === 0;
     }
 
     /**
@@ -121,7 +121,7 @@ final class Whois implements WhoisInterface
     {
         $pattern = implode("|", Config::load('reserved_words'));
 
-        return count(preg_grep("/{$pattern}/mi", $this->result)) > 0;
+        return count(preg_grep("/{$pattern}/mi", $this->response)) > 0;
     }
 
     /**
@@ -131,7 +131,7 @@ final class Whois implements WhoisInterface
      */
     public function isClientHold(): bool
     {
-        return count(preg_grep('/^(.*)Status(.*)clientHold/mi', $this->result)) > 0;
+        return count(preg_grep('/^(.*)Status(.*)clientHold/mi', $this->response)) > 0;
     }
 
     /**
@@ -160,14 +160,15 @@ final class Whois implements WhoisInterface
             'reserved' => $this->isReserved(),
             'client_hold' => $this->isClientHold(),
             'detail' => [
-                'registrant' => preg_grep_values('/^Registrant/', $this->result),
-                'admin' => preg_grep_values('/^Admin/', $this->result),
-                'tech' => preg_grep_values('/^Tech/', $this->result),
-                'billing' => preg_grep_values('/^Billing/', $this->result),
-                'status' => preg_grep_values('/^(.*)Status:/', $this->result),
-                'date' => preg_grep_values('/^(.*)Date:/', $this->result),
-                'name_server' => preg_grep_values('/^Name Server/', $this->result)
-            ]
+                'registrant' => preg_grep_values('/^Registrant/', $this->response),
+                'admin' => preg_grep_values('/^Admin/', $this->response),
+                'tech' => preg_grep_values('/^Tech/', $this->response),
+                'billing' => preg_grep_values('/^Billing/', $this->response),
+                'status' => preg_grep_values('/^(.*)Status:/', $this->response),
+                'date' => preg_grep_values('/^(.*)Date:/', $this->response),
+                'name_server' => preg_grep_values('/^Name Server/', $this->response)
+            ],
+            'raw' => $this->response
         ];
     }
 
@@ -178,7 +179,7 @@ final class Whois implements WhoisInterface
      */
     public function raw(): array
     {
-        return $this->result;
+        return $this->response;
     }
 
     /**
@@ -207,29 +208,41 @@ final class Whois implements WhoisInterface
     }
 
     /**
-     * @return bool
+     * @return string
      */
-    private function isRecursiveQueryDomain()
+    private function extractRegistrarWhoisServer(): string
     {
-        return !$this->recursive && $this->isRegistered() &&
-            in_array($this->tld, Config::load('recursive_tld'), true);
+        $servername = current((array)preg_filter('/(.*)Whois Server:\s+/i', '', $this->response));
+        if (!$servername) {
+            return '';
+        }
+
+        return $servername;
     }
 
     /**
-     * Request Whois query recursive.
+     * @return bool
+     */
+    private function isRequestRegistrarWhois()
+    {
+        return $this->isRegistered() && !$this->hasRegistrar && !$this->hasRawOnlyResult();
+    }
+
+    /**
+     * Request registrar whois server.
      *
      * @return self
      * @throws InvalidWhoisRequestException
      */
-    private function queryRecursive()
+    private function requestRegistrarWhois()
     {
-        $this->recursive = true;
+        $this->hasRegistrar = true;
 
-        $servername = current((array)preg_filter('/(.*)Whois Server:\s+/i', '', $this->result));
-        if (!$servername) {
-            throw new InvalidWhoisRequestException(self::$errorCodes[902], 902);
+        $registrar = $this->extractRegistrarWhoisServer();
+        if (strlen($registrar) === 0) {
+            return $this;
         }
 
-        return $this->query($this->domain, $servername);
+        return $this->query($this->domain, $registrar);
     }
 }
