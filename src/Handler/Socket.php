@@ -1,12 +1,12 @@
 <?php
-namespace Handler;
+namespace Chanshige\Handler;
 
 use Chanshige\Exception\SocketExecutionException;
 
 /**
  * Class Socket
  *
- * @package Handler
+ * @package Chanshige\Handler
  */
 final class Socket implements SocketInterface
 {

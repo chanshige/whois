@@ -1,10 +1,10 @@
 <?php
-namespace Handler;
+namespace Chanshige\Handler;
 
 /**
  * Interface SocketInterface
  *
- * @package Handler
+ * @package Chanshige\Handler
  */
 interface SocketInterface
 {
