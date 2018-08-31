@@ -17,8 +17,8 @@
   "autoload": {
     "files": [
       "extend.functions.php",
-      "src-flies/aux.php",
-      "src-flies/server_list.php"
+      "src-files/aux.php",
+      "src-files/server_list.php"
     ],
     "psr-4": {
       "Chanshige\\": "src/"

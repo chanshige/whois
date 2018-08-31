@@ -12,7 +12,7 @@ declare(strict_types=1);
 /**
  * @return array
  */
-function no_registration_words(): array
+function whois_no_registration_words(): array
 {
     return [
         'No match for',
@@ -28,7 +28,7 @@ function no_registration_words(): array
 /**
  * @return array
  */
-function reserved_words(): array
+function whois_reserved_words(): array
 {
     return [
         'reserved name',
