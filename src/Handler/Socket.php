@@ -1,7 +1,7 @@
 <?php
 namespace Handler;
 
-use Exception\SocketExecutionException;
+use Chanshige\Exception\SocketExecutionException;
 
 /**
  * Class Socket
