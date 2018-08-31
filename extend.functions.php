@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the Chanshige\Whois package.
  *
@@ -8,16 +9,13 @@
  * file that was distributed with this source code.
  */
 
-/** @const BASE_DIR */
-const CHANSHIGE_WHOIS_APP_DIR = __DIR__ . '/';
-
 /**
- * Extract Tld From DomainName.
+ * Get Tld From DomainName.
  *
  * @param string $domain
  * @return string
  */
-function tld($domain): string
+function get_tld($domain): string
 {
     $res = explode('.', $domain, 2);
 
@@ -31,7 +29,7 @@ function tld($domain): string
  * @param string $value
  * @return string
  */
-function convertIdnAscii(string $value): string
+function convert_idn_ascii(string $value): string
 {
     return idn_to_ascii($value, 0, INTL_IDNA_VARIANT_UTS46);
 }
@@ -42,7 +40,7 @@ function convertIdnAscii(string $value): string
  * @param string $value
  * @return string
  */
-function convertIdnUnicode(string $value): string
+function convert_Idn_unicode(string $value): string
 {
     return idn_to_utf8($value, 0, INTL_IDNA_VARIANT_UTS46);
 }
@@ -50,12 +48,12 @@ function convertIdnUnicode(string $value): string
 /**
  * Return array entries that match the pattern
  *
- * @param string $pattern
+ * @param string $pattern Pattern to search for, as a string.
  * @param array  $input
  * @param int    $flags
  * @return array
  */
-function preg_grep_values($pattern, array $input, $flags = 0)
+function preg_grep_values(string $pattern, array $input, int $flags = 0): array
 {
     return array_values(preg_grep($pattern, $input, $flags));
 }

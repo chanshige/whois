@@ -16,23 +16,21 @@
   ],
   "autoload": {
     "files": [
-      "extend.functions.php"
+      "extend.functions.php",
+      "src-flies/aux.php",
+      "src-flies/server_list.php"
     ],
     "psr-4": {
-      "Chanshige\\": "src/",
-      "Handler\\": "src/Handler",
-      "Exception\\": "src/Exception"
+      "Chanshige\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Chanshige\\": "tests/",
-      "Handler\\": "tests/Handler"
+      "Chanshige\\": "tests/"
     }
   },
   "require": {
-    "php": ">=7.1",
-    "symfony/yaml": "^4.0"
+    "php": ">=7.0"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "*",
