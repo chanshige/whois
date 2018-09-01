@@ -7,7 +7,7 @@ domain registered information(whois) search. It internally uses Symfony Yaml Com
 ## Installation
 With Composer
 ```
-$ composer require chanshige/whois 'v1.0.2'
+$ composer require chanshige/whois 'v2.0.0'
 ```
 
 ## usage
@@ -19,7 +19,7 @@ $whois = new \Chanshige\Whois();
 
 try {
     $whois->query('shigeki.tokyo', 'whois.nic.tokyo');
-    $result = $whois->hasRawOnlyResult() ? $whois->raw() : $whois->result();
+    $result = $whois->results();
     
     var_dump($result);
 } catch (Exception $e) {
@@ -36,7 +36,7 @@ try {
 - isClientHold() \
 ClientHoldとなっているかどうか(bool)
 
-- result() \
+- results() \
 上3つとWHOISを細分化したデータを返す(array)
 ```
 'domain_name' => string,
@@ -58,10 +58,6 @@ ClientHoldとなっているかどうか(bool)
 
 - raw() \
 加工せず取得したデータのまま返す(array)
-
-- hasRawOnlyResult() \
-raw()のみで結果を確認する必要があるtldかどうか(bool) \
-※ result()で表現できないフォーマットがあるため、判定材料に利用してください。 
 
 ## test (with coverage)
 `$ composer test`
