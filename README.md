@@ -39,7 +39,6 @@ ClientHoldとなっているかどうか(bool)
 - results() \
 上3つとWHOISを細分化したデータを返す(array)
 ```
-'domain_name' => string,
 'tld' => string,
 'registered' => bool,
 'reserved' => bool,
@@ -52,8 +51,7 @@ ClientHoldとなっているかどうか(bool)
    'status' => array(),
    'date' => array(),
    'name_server' => array(),
-],
-'raw' => array()
+]
 ```
 
 - raw() \
