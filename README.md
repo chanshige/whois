@@ -2,7 +2,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/chanshige/whois/badge.svg?branch=master)](https://coveralls.io/github/chanshige/whois?branch=master)
 
 # chanshige/whois
-domain registered information(whois) search. It internally uses Symfony Yaml Component
+domain registered information(whois) search.
 
 ## Installation
 With Composer
