@@ -1,7 +1,7 @@
 <?php
 namespace Chanshige;
 
-use Handler\SocketStub;
+use Chanshige\Handler\SocketStub;
 
 class WhoisTest extends CommonTestCase
 {
@@ -21,7 +21,7 @@ class WhoisTest extends CommonTestCase
     }
 
     /**
-     * @throws \Exception\InvalidWhoisRequestException
+     * @throws \Chanshige\Exception\InvalidQueryException
      */
     public function testQueryRaw()
     {
@@ -37,9 +37,9 @@ class WhoisTest extends CommonTestCase
     }
 
     /**
-     * @throws \Exception\InvalidWhoisRequestException
+     * @throws \Chanshige\Exception\InvalidQueryException
      */
-    public function testQueryResult()
+    public function testQueryResults()
     {
         $response = $this->whois->query(
             'chanshige.com.stub',
@@ -47,7 +47,6 @@ class WhoisTest extends CommonTestCase
         );
 
         $expected = [
-            'domain_name' => 'chanshige.com.stub',
             'tld' => 'com.stub',
             'registered' => true,
             'reserved' => false,
@@ -78,43 +77,14 @@ class WhoisTest extends CommonTestCase
                     'Name Server: BACKUP.NIC.COM',
                     'Name Server: SUE.NIC.COM',
                 ]
-            ],
-            'raw' => [
-                '',
-                '',
-                'Domain Name: chanshige.com.stub',
-                'Registry Domain ID: VRSN',
-                'Registrar WHOIS Server: whois.chanshige.com.stub',
-                'Registrar URL: http://networksolutions.com',
-                'Updated Date: 2018-03-02T17:00:22Z',
-                'Creation Date: 1994-02-07T05:00:00Z',
-                'Registrar Registration Expiration Date: 2028-02-08T05:00:00Z',
-                'Registrar: NETWORK SOLUTIONS, LLC.',
-                'Registrar IANA ID: 2',
-                'Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited',
-                'Registry Registrant ID:',
-                'Registrant Name: NIC',
-                'Registrant Organization: NIC',
-                'Registry Admin ID:',
-                'Admin Name: Semonche, Douglas',
-                'Admin Organization: Network Infiormation Center (NIC), LLC',
-                'Registry Tech ID:',
-                'Tech Name: Semonche, Douglas',
-                'Tech Organization: Network Infiormation Center (NIC), LLC',
-                'Name Server: BACKUP.NIC.COM',
-                'Name Server: SUE.NIC.COM',
-                'DNSSEC: unsigned',
-                'URL of the ICANN WHOIS Data Problem Reporting System: http://wdprs.internic.net/',
-                '>>> Last update of WHOIS database: 2018-04-23T15:37:52Z <<<',
-                ''
             ]
         ];
 
-        $this->assertEquals($expected, $response->result());
+        $this->assertEquals($expected, $response->results());
     }
 
     /**
-     * @expectedException \Exception\InvalidWhoisRequestException
+     * @expectedException \Chanshige\Exception\InvalidQueryException
      * @expectedExceptionMessage Failed to find whois server from iana database.
      */
     public function testFailedQueryByIana()
@@ -124,7 +94,7 @@ class WhoisTest extends CommonTestCase
     }
 
     /**
-     * @expectedException \Exception\InvalidWhoisRequestException
+     * @expectedException \Chanshige\Exception\InvalidQueryException
      * @expectedExceptionMessage Failed to open socket connection.
      */
     public function testFailedQuery()
@@ -134,7 +104,7 @@ class WhoisTest extends CommonTestCase
     }
 
     /**
-     * @throws \Exception\InvalidWhoisRequestException
+     * @throws \Chanshige\Exception\InvalidQueryException
      */
     public function testQueryWithOutStub()
     {

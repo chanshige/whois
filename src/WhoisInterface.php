@@ -38,7 +38,12 @@ interface WhoisInterface
     /**
      * @return array
      */
-    public function result(): array;
+    public function results(): array;
+
+    /**
+     * @return array
+     */
+    public function detail(): array;
 
     /**
      * @return array
