@@ -11,16 +11,14 @@ interface WhoisInterface
     /**
      * @param string $domain
      * @param string $servername
-     * @return WhoisInterface
      */
-    public function query(string $domain, string $servername = ''): WhoisInterface;
+    public function query(string $domain, string $servername = '');
 
     /**
      * @param string $domain
      * @param string $servername
-     * @return WhoisInterface (clone)
      */
-    public function withQuery(string $domain, string $servername = ''): WhoisInterface;
+    public function withQuery(string $domain, string $servername = '');
 
     /**
      * @return bool
@@ -38,14 +36,14 @@ interface WhoisInterface
     public function isClientHold(): bool;
 
     /**
-     * @return bool
+     * @return array
      */
-    public function hasRawOnlyResult(): bool;
+    public function results(): array;
 
     /**
      * @return array
      */
-    public function result(): array;
+    public function detail(): array;
 
     /**
      * @return array

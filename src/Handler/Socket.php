@@ -1,12 +1,12 @@
 <?php
-namespace Handler;
+namespace Chanshige\Handler;
 
-use Exception\SocketExecutionException;
+use Chanshige\Exception\SocketExecutionException;
 
 /**
  * Class Socket
  *
- * @package Handler
+ * @package Chanshige\Handler
  */
 final class Socket implements SocketInterface
 {
@@ -25,51 +25,51 @@ final class Socket implements SocketInterface
     /** @var string $errStr error message */
     private $errStr;
 
+    private const OPEN_ERROR = 10;
+    private const PUTS_ERROR = 11;
+    private const READ_ERROR = 12;
+
     /** @var array $errorCodes */
     private static $errorCodes = [
-        10 => 'Failed to open socket connection.',
-        11 => 'Write to socket failed.',
-        12 => 'Read from socket failed.'
+        Socket::OPEN_ERROR => 'Failed to open socket connection.',
+        Socket::PUTS_ERROR => 'Write to socket failed.',
+        Socket::READ_ERROR => 'Read from socket failed.'
     ];
 
     /**
-     * port
+     * Set port number.
      *
      * @param int $portNo
-     * @return SocketInterface
+     * @return void
      */
-    public function port(int $portNo): SocketInterface
+    public function setPort(int $portNo)
     {
         $this->port = $portNo;
-
-        return $this;
     }
 
     /**
-     * timeout
+     * Set timeout.
      *
      * @param int $seconds
-     * @return SocketInterface
+     * @return void
      */
-    public function timeout(int $seconds): SocketInterface
+    public function setTimeout(int $seconds)
     {
         $this->timeout = $seconds;
-
-        return $this;
     }
 
     /**
      * Open Internet or Unix domain socket connection.
      *
      * @param string $host
-     * @return SocketInterface
+     * @return Socket
      * @throws SocketExecutionException
      */
-    public function open(string $host): SocketInterface
+    public function open(string $host): Socket
     {
         $resource = @fsockopen($host, $this->port, $this->errno, $this->errStr, $this->timeout);
         if (!$resource) {
-            throw new SocketExecutionException(self::$errorCodes[10], 10);
+            throw new SocketExecutionException(self::$errorCodes[Socket::OPEN_ERROR], Socket::OPEN_ERROR);
         }
         $this->resource = $resource;
 
@@ -77,17 +77,17 @@ final class Socket implements SocketInterface
     }
 
     /**
-     * fwrite.
+     * Binary-safe file write.
      *
      * @param string $value
-     * @return SocketInterface
+     * @return Socket
      * @throws SocketExecutionException
      */
-    public function puts(string $value): SocketInterface
+    public function puts(string $value): Socket
     {
         $res = @fputs($this->resource, "{$value}\r\n");
         if (!$res) {
-            throw new SocketExecutionException(self::$errorCodes[11], 11);
+            throw new SocketExecutionException(self::$errorCodes[Socket::PUTS_ERROR], Socket::PUTS_ERROR);
         }
 
         return $this;
@@ -101,12 +101,14 @@ final class Socket implements SocketInterface
      */
     public function read(): array
     {
-        $data = array();
+        $data = [];
         while (!feof($this->resource)) {
-            $data[] = trim($buffer = fgets($this->resource));
-            if ($buffer === false) {
-                throw new SocketExecutionException(self::$errorCodes[12], 12);
+            $buffer = fgets($this->resource);
+            if (!$buffer) {
+                throw new SocketExecutionException(self::$errorCodes[Socket::READ_ERROR], Socket::READ_ERROR);
             }
+
+            $data[] = trim($buffer);
         }
 
         return $data;

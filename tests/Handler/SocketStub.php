@@ -1,7 +1,7 @@
 <?php
-namespace Handler;
+namespace Chanshige\Handler;
 
-use Exception\SocketExecutionException;
+use Chanshige\Exception\SocketExecutionException;
 
 /**
  * Class SocketStub
@@ -32,7 +32,7 @@ class SocketStub implements SocketInterface
      * @param int $portNo
      * @return SocketInterface
      */
-    public function port(int $portNo): SocketInterface
+    public function setPort(int $portNo)
     {
         $this->port = $portNo;
 
@@ -43,7 +43,7 @@ class SocketStub implements SocketInterface
      * @param int $seconds
      * @return SocketInterface
      */
-    public function timeout(int $seconds): SocketInterface
+    public function setTimeout(int $seconds)
     {
         $this->timeout = $seconds;
 
@@ -55,7 +55,7 @@ class SocketStub implements SocketInterface
      * @return SocketInterface
      * @throws SocketExecutionException
      */
-    public function open(string $host): SocketInterface
+    public function open(string $host)
     {
         $resource = in_array($host, $this->allowHostName()) ? $host : false;
         if (!$resource) {

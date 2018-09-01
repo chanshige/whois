@@ -1,48 +1,40 @@
 <?php
-namespace Handler;
+namespace Chanshige\Handler;
 
 /**
  * Interface SocketInterface
  *
- * @package Handler
+ * @package Chanshige\Handler
  */
 interface SocketInterface
 {
     /**
      * @param integer $portNo
-     *
-     * @return SocketInterface
      */
-    public function port(int $portNo): SocketInterface;
+    public function setPort(int $portNo);
 
     /**
      * @param integer $seconds
-     *
-     * @return SocketInterface
      */
-    public function timeout(int $seconds): SocketInterface;
+    public function setTimeout(int $seconds);
 
     /**
      * @param string $host
-     *
-     * @return SocketInterface
      */
-    public function open(string $host): SocketInterface;
+    public function open(string $host);
 
     /**
      * @param string $value
-     *
-     * @return SocketInterface
      */
-    public function puts(string $value): SocketInterface;
+    public function puts(string $value);
 
     /**
      * @return array
      */
-    public function read(): array;
+    public function read();
 
     /**
      * @return bool
      */
-    public function close(): bool;
+    public function close();
 }
