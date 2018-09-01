@@ -168,7 +168,7 @@ final class Whois implements WhoisInterface
         $res = $this->withQuery($this->tld, 'whois.iana.org');
         $servername = current((array)preg_filter('/^whois:\s+/', '', $res->response));
         if (!$servername) {
-            return '';
+            throw new InvalidQueryException('Failed to find whois server from iana database.');
         }
 
         return $servername;
@@ -181,7 +181,7 @@ final class Whois implements WhoisInterface
     {
         $servername = current((array)preg_filter('/(.*)Whois Server:\s+/i', '', $this->response));
         if (!$servername) {
-            throw new InvalidQueryException('Failed to find whois server from iana database.');
+            return '';
         }
 
         return $servername;
