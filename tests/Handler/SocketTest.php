@@ -1,5 +1,5 @@
 <?php
-namespace Handler;
+namespace Chanshige\Handler;
 
 use Chanshige\CommonTestCase;
 
@@ -11,7 +11,7 @@ class SocketTest extends CommonTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->socket = (new Socket())->port(43)->timeout(1);
+        $this->socket = new Socket();
     }
 
     protected function tearDown()
@@ -20,7 +20,7 @@ class SocketTest extends CommonTestCase
     }
 
     /**
-     * @throws \Exception\SocketExecutionException
+     * @throws \Chanshige\Exception\SocketExecutionException
      */
     public function testSocket()
     {
@@ -35,7 +35,7 @@ class SocketTest extends CommonTestCase
     }
 
     /**
-     * @expectedException \Exception\SocketExecutionException
+     * @expectedException \Chanshige\Exception\SocketExecutionException
      * @expectedExceptionMessage Failed to open socket connection.
      */
     public function testOpenFailed()
@@ -44,7 +44,7 @@ class SocketTest extends CommonTestCase
     }
 
     /**
-     * @expectedException \Exception\SocketExecutionException
+     * @expectedException \Chanshige\Exception\SocketExecutionException
      * @expectedExceptionMessage Write to socket failed.
      */
     public function testPutsFailed()
@@ -54,7 +54,7 @@ class SocketTest extends CommonTestCase
     }
 
     /**
-     * @expectedException \Exception\SocketExecutionException
+     * @expectedException \Chanshige\Exception\SocketExecutionException
      * @expectedExceptionMessage Read from socket failed.
      */
     public function testReadFailed()

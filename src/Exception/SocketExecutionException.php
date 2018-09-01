@@ -1,11 +1,11 @@
 <?php
-namespace Exception;
+namespace Chanshige\Exception;
 
 /**
  * Class SocketExecutionException
  *
- * @package Exception
+ * @package Chanshige\Exception
  */
-class SocketExecutionException extends \Exception
+final class SocketExecutionException extends \RuntimeException
 {
 }
