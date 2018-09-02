@@ -1,49 +1,16 @@
 <?php
 declare(strict_types=1);
-/*
- * This file is part of the Chanshige\Whois package.
+
+namespace Chanshige\Whois;
+
+/**
+ * Class CcTld
  *
- * (c) shigeki tanaka <dev@shigeki.tokyo>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @package Chanshige\Whois
  */
-
-/**
- * @return array
- */
-function whois_no_registration_words(): array
+final class CcTld extends ListAbstract
 {
-    return [
-        'No match for',
-        'NOT FOUND',
-        'No Data Found',
-        'has not been registered',
-        'does not exist',
-        'No match!!',
-        'available for registration',
-    ];
-}
-
-/**
- * @return array
- */
-function whois_reserved_words(): array
-{
-    return [
-        'reserved name',
-        'Reserved Domain',
-        'registry reserved',
-        'has been reserved',
-    ];
-}
-
-/**
- * @return array
- */
-function get_cctld_list(): array
-{
-    return [
+    protected static $lists = [
         'jp',
         'co.jp',
         'or.jp',

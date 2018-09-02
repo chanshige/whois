@@ -12,6 +12,8 @@ class SocketTest extends CommonTestCase
     {
         parent::setUp();
         $this->socket = new Socket();
+        $this->socket->setPort(43);
+        $this->socket->setTimeout(1);
     }
 
     protected function tearDown()

@@ -16,8 +16,6 @@
   ],
   "autoload": {
     "files": [
-      "src-files/common.php",
-      "src-files/server_list.php",
       "extend.functions.php"
     ],
     "psr-4": {

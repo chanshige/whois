@@ -6,6 +6,9 @@ namespace Chanshige;
 use Chanshige\Exception\InvalidQueryException;
 use Chanshige\Handler\Socket;
 use Chanshige\Handler\SocketInterface;
+use Chanshige\Whois\CcTld;
+use Chanshige\Whois\Common;
+use Chanshige\Whois\Server;
 
 /**
  * Class Whois
@@ -48,7 +51,7 @@ final class Whois implements WhoisInterface
         $this->tld = get_tld($domain);
 
         if (strlen($servername) === 0) {
-            $servername = get_whois_servername($this->tld) ?: $this->findWhoisServerFromIana();
+            $servername = Server::get($this->tld) ?: $this->findWhoisServerFromIana();
         }
 
         try {
@@ -91,7 +94,7 @@ final class Whois implements WhoisInterface
      */
     public function isRegistered(): bool
     {
-        $pattern = implode("|", whois_no_registration_words());
+        $pattern = implode("|", Common::noRegistrationKeyWords());
         return count(preg_grep("/{$pattern}/mi", $this->response)) === 0;
     }
 
@@ -102,7 +105,7 @@ final class Whois implements WhoisInterface
      */
     public function isReserved(): bool
     {
-        $pattern = implode("|", whois_reserved_words());
+        $pattern = implode("|", Common::reservedKeyWords());
         return count(preg_grep("/{$pattern}/mi", $this->response)) > 0;
     }
 
@@ -215,6 +218,6 @@ final class Whois implements WhoisInterface
      */
     private function isCcTld()
     {
-        return in_array($this->tld, get_cctld_list(), true);
+        return in_array($this->tld, CcTld::getAll(), true);
     }
 }
