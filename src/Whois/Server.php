@@ -1,30 +1,16 @@
 <?php
 declare(strict_types=1);
-/*
- * This file is part of the Chanshige\Whois package.
- *
- * (c) shigeki tanaka <dev@shigeki.tokyo>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+
+namespace Chanshige\Whois;
 
 /**
- * @param string $tld
- * @return string
+ * Class Server
+ *
+ * @package Chanshige\Whois
  */
-function get_whois_servername($tld = ''): string
+final class Server extends ListAbstract
 {
-    // Null Coalescing Operator
-    return whois_server_list()[$tld] ?? '';
-}
-
-/**
- * @return array
- */
-function whois_server_list(): array
-{
-    return [
+    protected static $lists = [
         'com' => 'whois.internic.net',
         'net' => 'whois.internic.net',
         'info' => 'whois.afilias.net',
