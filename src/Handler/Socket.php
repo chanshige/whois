@@ -25,15 +25,15 @@ final class Socket implements SocketInterface
     /** @var string $errStr error message */
     private $errStr;
 
-    private const OPEN_ERROR = 10;
-    private const PUTS_ERROR = 11;
-    private const READ_ERROR = 12;
+    private const ERROR_OPEN = 10;
+    private const ERROR_PUTS = 11;
+    private const ERROR_READ = 12;
 
     /** @var array $errorCodes */
     private static $errorCodes = [
-        Socket::OPEN_ERROR => 'Failed to open socket connection.',
-        Socket::PUTS_ERROR => 'Write to socket failed.',
-        Socket::READ_ERROR => 'Read from socket failed.'
+        Socket::ERROR_OPEN => 'Failed to open socket connection.',
+        Socket::ERROR_PUTS => 'Write to socket failed.',
+        Socket::ERROR_READ => 'Read from socket failed.'
     ];
 
     /**
@@ -69,7 +69,7 @@ final class Socket implements SocketInterface
     {
         $resource = @fsockopen($host, $this->port, $this->errno, $this->errStr, $this->timeout);
         if (!$resource) {
-            throw new SocketExecutionException(self::$errorCodes[Socket::OPEN_ERROR], Socket::OPEN_ERROR);
+            throw new SocketExecutionException(self::$errorCodes[Socket::ERROR_OPEN], Socket::ERROR_OPEN);
         }
         $this->resource = $resource;
 
@@ -87,7 +87,7 @@ final class Socket implements SocketInterface
     {
         $res = @fputs($this->resource, "{$value}\r\n");
         if (!$res) {
-            throw new SocketExecutionException(self::$errorCodes[Socket::PUTS_ERROR], Socket::PUTS_ERROR);
+            throw new SocketExecutionException(self::$errorCodes[Socket::ERROR_PUTS], Socket::ERROR_PUTS);
         }
 
         return $this;
@@ -105,7 +105,7 @@ final class Socket implements SocketInterface
         while (!feof($this->resource)) {
             $buffer = fgets($this->resource);
             if (!$buffer) {
-                throw new SocketExecutionException(self::$errorCodes[Socket::READ_ERROR], Socket::READ_ERROR);
+                throw new SocketExecutionException(self::$errorCodes[Socket::ERROR_READ], Socket::ERROR_READ);
             }
 
             $data[] = trim($buffer);
