@@ -39,6 +39,7 @@ class SocketTest extends CommonTestCase
     /**
      * @expectedException \Chanshige\Exception\SocketExecutionException
      * @expectedExceptionMessage Failed to open socket connection.
+     * @expectedExceptionCode 400
      */
     public function testOpenFailed()
     {
@@ -48,6 +49,7 @@ class SocketTest extends CommonTestCase
     /**
      * @expectedException \Chanshige\Exception\SocketExecutionException
      * @expectedExceptionMessage Write to socket failed.
+     * @expectedExceptionCode 405
      */
     public function testPutsFailed()
     {
@@ -58,6 +60,7 @@ class SocketTest extends CommonTestCase
     /**
      * @expectedException \Chanshige\Exception\SocketExecutionException
      * @expectedExceptionMessage Read from socket failed.
+     * @expectedExceptionCode 403
      */
     public function testReadFailed()
     {

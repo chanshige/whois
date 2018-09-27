@@ -84,6 +84,17 @@ class WhoisTest extends CommonTestCase
     }
 
     /**
+     * @throws \Chanshige\Exception\InvalidQueryException
+     */
+    public function testQueryByIana()
+    {
+        $whois = new Whois();
+        $whois->query('nic.kyoto');
+
+        $this->assertTrue($whois->isRegistered());
+    }
+
+    /**
      * @expectedException \Chanshige\Exception\InvalidQueryException
      * @expectedExceptionMessage Failed to find whois server from iana database.
      */
