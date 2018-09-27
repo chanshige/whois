@@ -25,9 +25,9 @@ final class Socket implements SocketInterface
     /** @var string $errStr error message */
     private $errStr;
 
-    private const ERROR_OPEN = 10;
-    private const ERROR_PUTS = 11;
-    private const ERROR_READ = 12;
+    private const ERROR_OPEN = 400;
+    private const ERROR_PUTS = 405;
+    private const ERROR_READ = 403;
 
     /** @var array $errCodes */
     private static $errCodes = [

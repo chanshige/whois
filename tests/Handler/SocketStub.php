@@ -21,11 +21,15 @@ class SocketStub implements SocketInterface
     /** @var int $timeout sec */
     private $timeout = 3;
 
-    /** @var array $errorCodes */
-    private static $errorCodes = [
-        10 => 'Failed to open socket connection.',
-        11 => 'Write to socket failed.',
-        12 => 'Read from socket failed.'
+    private const ERROR_OPEN = 400;
+    private const ERROR_PUTS = 405;
+    private const ERROR_READ = 403;
+
+    /** @var array $errCodes */
+    private static $errCodes = [
+        SocketStub::ERROR_OPEN => 'Failed to open socket connection.',
+        SocketStub::ERROR_PUTS => 'Write to socket failed.',
+        SocketStub::ERROR_READ => 'Read from socket failed.'
     ];
 
     /**
@@ -59,7 +63,7 @@ class SocketStub implements SocketInterface
     {
         $resource = in_array($host, $this->allowHostName()) ? $host : false;
         if (!$resource) {
-            throw new SocketExecutionException(self::$errorCodes[10], 10);
+            throw new SocketExecutionException(self::$errCodes[SocketStub::ERROR_OPEN], SocketStub::ERROR_OPEN);
         }
         $this->resource = $resource;
 
@@ -75,7 +79,7 @@ class SocketStub implements SocketInterface
     {
         $res = !is_null($this->exampleResult($value)) && $this->resource;
         if (!$res) {
-            throw new SocketExecutionException(self::$errorCodes[11], 11);
+            throw new SocketExecutionException(self::$errCodes[SocketStub::ERROR_PUTS], SocketStub::ERROR_PUTS);
         }
         $this->domain = $value;
 
@@ -90,7 +94,7 @@ class SocketStub implements SocketInterface
     {
         $res = !is_null($this->exampleResult($this->domain)) && $this->resource;
         if (!$res) {
-            throw new SocketExecutionException(self::$errorCodes[11], 11);
+            throw new SocketExecutionException(self::$errCodes[SocketStub::ERROR_PUTS], SocketStub::ERROR_PUTS);
         }
 
         $data = array();
@@ -101,6 +105,9 @@ class SocketStub implements SocketInterface
         return $data;
     }
 
+    /**
+     * @return bool
+     */
     public function close(): bool
     {
         $this->resource = null;
@@ -108,6 +115,9 @@ class SocketStub implements SocketInterface
         return true;
     }
 
+    /**
+     * @return array
+     */
     private function allowHostName()
     {
         return [
@@ -117,6 +127,10 @@ class SocketStub implements SocketInterface
         ];
     }
 
+    /**
+     * @param $domain
+     * @return array
+     */
     private function exampleResult($domain)
     {
         $examples = [
@@ -151,6 +165,6 @@ class SocketStub implements SocketInterface
             ]
         ];
 
-        return $examples[$domain] ?? null;
+        return $examples[$domain] ?? [];
     }
 }
