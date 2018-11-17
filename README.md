@@ -64,4 +64,6 @@ ClientHoldとなっているかどうか(bool)
 加工せず取得したデータのまま返す(array)
 
 ## test (with coverage)
-`$ composer test`
+`$ composer test`  
+
+![coverage](https://i.gyazo.com/000ff1c6d99f6ed44d586e405691f668.png)
