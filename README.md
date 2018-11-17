@@ -1,4 +1,4 @@
-[![Packagist](https://img.shields.io/badge/packagist-v2.0.1-blue.svg)](https://packagist.org/packages/chanshige/whois)
+[![Packagist](https://img.shields.io/badge/packagist-v2.0.2-blue.svg)](https://packagist.org/packages/chanshige/whois)
 [![Build Status](https://travis-ci.org/chanshige/whois.svg?branch=master)](https://travis-ci.org/chanshige/whois)
 [![Coverage Status](https://coveralls.io/repos/github/chanshige/whois/badge.svg?branch=master)](https://coveralls.io/github/chanshige/whois?branch=master)
 
@@ -8,7 +8,7 @@ domain registered information(whois) search.
 ## Installation
 With Composer
 ```
-$ composer require chanshige/whois 'v2.0.1'
+$ composer require chanshige/whois 'v2.0.2'
 ```
 
 ## usage
@@ -64,4 +64,6 @@ ClientHoldとなっているかどうか(bool)
 加工せず取得したデータのまま返す(array)
 
 ## test (with coverage)
-`$ composer test`
+`$ composer test`  
+
+![coverage](https://i.gyazo.com/000ff1c6d99f6ed44d586e405691f668.png)

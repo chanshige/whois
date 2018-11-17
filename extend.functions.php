@@ -40,7 +40,7 @@ function convert_idn_ascii(string $value): string
  * @param string $value
  * @return string
  */
-function convert_Idn_unicode(string $value): string
+function convert_idn_unicode(string $value): string
 {
     return idn_to_utf8($value, 0, INTL_IDNA_VARIANT_UTS46);
 }

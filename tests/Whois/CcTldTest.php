@@ -19,5 +19,6 @@ class CcTldTest extends CommonTestCase
     public function testGetAll()
     {
         $this->assertTrue(count(CcTld::getAll()) > 0);
+        $this->assertTrue(in_array('fukuoka.jp', CcTld::getAll(), true));
     }
 }
