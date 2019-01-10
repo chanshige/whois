@@ -16,6 +16,28 @@ abstract class ListAbstract
     protected static $lists = [];
 
     /**
+     * Key exists.
+     *
+     * @param string $key
+     * @return bool
+     */
+    final public static function exists($key): bool
+    {
+        return isset(static::$lists[$key]);
+    }
+
+    /**
+     * Has value.
+     *
+     * @param int|string $value
+     * @return bool
+     */
+    final public static function has($value): bool
+    {
+        return in_array($value, static::$lists, true);
+    }
+
+    /**
      * Get one.
      *
      * @param int|string $key

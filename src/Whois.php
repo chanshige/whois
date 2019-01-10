@@ -4,11 +4,12 @@ declare(strict_types=1);
 namespace Chanshige;
 
 use Chanshige\Exception\InvalidQueryException;
+use Chanshige\Exception\SocketExecutionException;
 use Chanshige\Handler\Socket;
 use Chanshige\Handler\SocketInterface;
 use Chanshige\Whois\CcTld;
-use Chanshige\Whois\Common;
 use Chanshige\Whois\Server;
+use Chanshige\Whois\Util;
 
 /**
  * Class Whois
@@ -17,12 +18,16 @@ use Chanshige\Whois\Server;
  */
 final class Whois implements WhoisInterface
 {
+    /** @var string Iana whois server url. */
+    private const IANA_SERVER_URL = 'whois.iana.org';
+
+    /** @var SocketInterface */
     private $socket;
 
-    private $isRequested = false;
-
+    /** @var string top-level-domain. */
     private $tld;
 
+    /** @var array Response data. */
     private $response = [];
 
     /**
@@ -44,47 +49,41 @@ final class Whois implements WhoisInterface
      *
      * @param string $domain
      * @param string $servername
-     * @return Whois
+     * @return self
      */
-    public function query(string $domain, string $servername = '')
+    public function query(string $domain, string $servername = ''): WhoisInterface
     {
         $this->tld = get_tld($domain);
 
         if (strlen($servername) === 0) {
-            $servername = Server::get($this->tld) ?: $this->findWhoisServerFromIana();
+            $servername = $this->getWhoisServerName($this->tld);
         }
 
-        try {
-            $this->response = $this->socket->open($servername)
-                ->puts($domain)
-                ->read();
-            $this->socket->close();
+        $this->response = $this->invokeRequest($domain, $servername);
 
-            // Registrarへの問い合わせを行わない
-            if (!$this->hasRequestedRegistrarServer()) {
+        if ($this->isRequestToRegistrarServer()) {
+            $registrar = Util::extractWhoisServerName($this->response);
+            // not found.
+            if (strlen($registrar) === 0) {
                 return $this;
             }
 
-            return $this->queryRegistrarWhoisServer($domain);
-        } catch (\Exception $e) {
-            throw new InvalidQueryException($e->getMessage(), $e->getCode());
+            $this->response = $this->invokeRequest($domain, $servername);
         }
+
+        return $this;
     }
 
     /**
      * @param string $domain
      * @param string $servername
-     * @return Whois
+     * @return self
      */
-    public function withQuery(string $domain, string $servername = '')
+    public function withQuery(string $domain, string $servername = ''): WhoisInterface
     {
-        $clone = clone $this;
-        $clone->socket = clone $this->socket;
-        $clone->tld = '';
-        $clone->response = [];
-        $clone->isRequested = false;
+        $whois = new self($this->socket);
 
-        return $clone->query($domain, $servername);
+        return $whois->query($domain, $servername);
     }
 
     /**
@@ -94,7 +93,16 @@ final class Whois implements WhoisInterface
      */
     public function isRegistered(): bool
     {
-        $pattern = implode("|", Common::noRegistrationKeyWords());
+        $pattern = implode("|", [
+            'No match for',
+            'NOT FOUND',
+            'No Data Found',
+            'has not been registered',
+            'does not exist',
+            'No match!!',
+            'available for registration',
+        ]);
+
         return count(preg_grep("/{$pattern}/mi", $this->response)) === 0;
     }
 
@@ -105,7 +113,13 @@ final class Whois implements WhoisInterface
      */
     public function isReserved(): bool
     {
-        $pattern = implode("|", Common::reservedKeyWords());
+        $pattern = implode("|", [
+            'reserved name',
+            'Reserved Domain',
+            'registry reserved',
+            'has been reserved',
+        ]);
+
         return count(preg_grep("/{$pattern}/mi", $this->response)) > 0;
     }
 
@@ -131,7 +145,7 @@ final class Whois implements WhoisInterface
             'registered' => $this->isRegistered(),
             'reserved' => $this->isReserved(),
             'client_hold' => $this->isClientHold(),
-            'detail' => ($this->isCcTld() ? $this->raw() : $this->detail())
+            'detail' => (CcTld::has($this->tld) ? $this->raw() : $this->detail())
         ];
     }
 
@@ -164,13 +178,44 @@ final class Whois implements WhoisInterface
     }
 
     /**
+     * @param string $domain
+     * @param string $servername
+     * @return array
+     * @throws InvalidQueryException
+     */
+    private function invokeRequest(string $domain, string $servername): array
+    {
+        try {
+            $response = $this->socket->open($servername)
+                ->puts($domain)
+                ->read();
+            return $response;
+        } catch (SocketExecutionException $e) {
+            throw new InvalidQueryException($e->getMessage(), $e->getCode());
+        } finally {
+            $this->socket->close();
+        }
+    }
+
+    /**
+     * @param string $tld
      * @return string
      */
-    private function findWhoisServerFromIana(): string
+    private function getWhoisServerName(string $tld): string
     {
-        $res = $this->withQuery($this->tld, 'whois.iana.org');
-        $servername = current((array)preg_filter('/^whois:\s+/', '', $res->response));
-        if (!$servername) {
+        return Server::exists($tld) ? Server::get($tld) : $this->findWhoisServerFromIana($tld);
+    }
+
+    /**
+     * @param string $tld
+     * @return string
+     * @throws InvalidQueryException
+     */
+    private function findWhoisServerFromIana(string $tld): string
+    {
+        $request = $this->invokeRequest($tld, self::IANA_SERVER_URL);
+        $servername = Util::extractWhoisName($request);
+        if (strlen($servername) === 0) {
             throw new InvalidQueryException('Failed to find whois server from iana database.');
         }
 
@@ -178,46 +223,10 @@ final class Whois implements WhoisInterface
     }
 
     /**
-     * @return string
-     */
-    private function extractRegistrarWhoisServer(): string
-    {
-        $servername = current((array)preg_filter('/(.*)Whois Server:\s+/i', '', $this->response));
-        if (!$servername) {
-            return '';
-        }
-
-        return $servername;
-    }
-
-    /**
-     * @param string $domain
-     * @return Whois
-     */
-    private function queryRegistrarWhoisServer(string $domain)
-    {
-        $this->isRequested = true;
-        $registrar = $this->extractRegistrarWhoisServer();
-        if (strlen($registrar) === 0) {
-            return $this;
-        }
-
-        return $this->query($domain, $registrar);
-    }
-
-    /**
      * @return bool
      */
-    private function hasRequestedRegistrarServer()
+    private function isRequestToRegistrarServer(): bool
     {
-        return $this->isRegistered() && !$this->isRequested && !$this->isCcTld();
-    }
-
-    /**
-     * @return bool
-     */
-    private function isCcTld()
-    {
-        return in_array($this->tld, CcTld::getAll(), true);
+        return $this->isRegistered() && !CcTld::has($this->tld);
     }
 }

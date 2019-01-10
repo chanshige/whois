@@ -89,7 +89,7 @@ class WhoisTest extends CommonTestCase
     public function testQueryByIana()
     {
         $whois = new Whois();
-        $whois->query('nic.kyoto');
+        $whois->query('verisign-grs.com');
 
         $this->assertTrue($whois->isRegistered());
     }
