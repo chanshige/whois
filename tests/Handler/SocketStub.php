@@ -128,7 +128,7 @@ class SocketStub implements SocketInterface
     }
 
     /**
-     * @param $domain
+     * @param string $domain
      * @return array
      */
     private function exampleResult($domain)

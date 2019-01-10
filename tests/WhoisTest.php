@@ -117,7 +117,7 @@ class WhoisTest extends CommonTestCase
     /**
      * @throws \Chanshige\Exception\InvalidQueryException
      */
-    public function testQueryWithOutStub()
+    public function testQueryWithoutStub()
     {
         $whois = new Whois();
         $response = $whois->query('verisign.com');
@@ -126,5 +126,11 @@ class WhoisTest extends CommonTestCase
         $this->assertTrue($response->isRegistered());
         $this->assertFalse($response->isReserved());
         $this->assertFalse($response->isClientHold());
+
+        $response = $whois->withQuery('afilias.info');
+        $this->assertInstanceOf('Chanshige\Whois', $response);
+
+        $response = $whois->withQuery('nic.app');
+        $this->assertInstanceOf('Chanshige\Whois', $response);
     }
 }
