@@ -10,10 +10,10 @@ use Chanshige\CommonTestCase;
  */
 class CcTldTest extends CommonTestCase
 {
-    public function testHas()
+    public function testExists()
     {
-        $this->assertTrue(CcTld::has('be'));
-        $this->assertFalse(CcTld::has('com'));
+        $this->assertTrue(CcTld::exists('be'));
+        $this->assertFalse(CcTld::exists('com'));
     }
 
     public function testGetOne()

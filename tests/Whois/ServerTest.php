@@ -5,10 +5,10 @@ use Chanshige\CommonTestCase;
 
 class ServerTest extends CommonTestCase
 {
-    public function testExists()
+    public function testHas()
     {
-        $this->assertTrue(Server::exists('com'));
-        $this->assertFalse(Server::exists('abc'));
+        $this->assertTrue(Server::has('com'));
+        $this->assertFalse(Server::has('abc'));
     }
 
     public function testGetOne()

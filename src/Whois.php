@@ -145,7 +145,7 @@ final class Whois implements WhoisInterface
             'registered' => $this->isRegistered(),
             'reserved' => $this->isReserved(),
             'client_hold' => $this->isClientHold(),
-            'detail' => (CcTld::has($this->tld) ? $this->raw() : $this->detail())
+            'detail' => (CcTld::exists($this->tld) ? $this->raw() : $this->detail())
         ];
     }
 
@@ -203,7 +203,7 @@ final class Whois implements WhoisInterface
      */
     private function getWhoisServerName(string $tld): string
     {
-        return Server::exists($tld) ? Server::get($tld) : $this->findWhoisServerFromIana($tld);
+        return Server::has($tld) ? Server::get($tld) : $this->findWhoisServerFromIana($tld);
     }
 
     /**
@@ -227,6 +227,6 @@ final class Whois implements WhoisInterface
      */
     private function isRequestToRegistrarServer(): bool
     {
-        return $this->isRegistered() && !CcTld::has($this->tld);
+        return $this->isRegistered() && !CcTld::exists($this->tld);
     }
 }
