@@ -68,7 +68,7 @@ final class Whois implements WhoisInterface
                 return $this;
             }
 
-            $this->response = $this->invokeRequest($domain, $servername);
+            $this->response = $this->invokeRequest($domain, $registrar);
         }
 
         return $this;
