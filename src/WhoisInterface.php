@@ -11,14 +11,16 @@ interface WhoisInterface
     /**
      * @param string $domain
      * @param string $servername
+     * @return WhoisInterface
      */
-    public function query(string $domain, string $servername = '');
+    public function query(string $domain, string $servername): WhoisInterface;
 
     /**
      * @param string $domain
      * @param string $servername
+     * @return WhoisInterface (clone or new object)
      */
-    public function withQuery(string $domain, string $servername = '');
+    public function withQuery(string $domain, string $servername): WhoisInterface;
 
     /**
      * @return bool

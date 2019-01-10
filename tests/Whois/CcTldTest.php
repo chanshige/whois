@@ -10,6 +10,12 @@ use Chanshige\CommonTestCase;
  */
 class CcTldTest extends CommonTestCase
 {
+    public function testExists()
+    {
+        $this->assertTrue(CcTld::exists('be'));
+        $this->assertFalse(CcTld::exists('com'));
+    }
+
     public function testGetOne()
     {
         $this->assertSame('jp', CcTld::get(0));

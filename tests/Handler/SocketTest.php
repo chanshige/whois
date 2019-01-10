@@ -64,7 +64,7 @@ class SocketTest extends CommonTestCase
      */
     public function testReadFailed()
     {
-        $this->socket->open('whois.nic.tokyo');
+        $this->socket->open('whois.verisign-grs.com');
         $this->socket->read();
         $this->socket->close();
     }

@@ -5,6 +5,12 @@ use Chanshige\CommonTestCase;
 
 class ServerTest extends CommonTestCase
 {
+    public function testHas()
+    {
+        $this->assertTrue(Server::has('com'));
+        $this->assertFalse(Server::has('abc'));
+    }
+
     public function testGetOne()
     {
         $this->assertSame('', Server::get('abc'));
