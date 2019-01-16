@@ -71,9 +71,10 @@ final class Socket implements SocketInterface
         if (!$resource) {
             throw new SocketExecutionException(self::$errCodes[Socket::ERROR_OPEN], Socket::ERROR_OPEN);
         }
-        $this->resource = $resource;
+        $socket = clone $this;
+        $socket->resource = $resource;
 
-        return $this;
+        return $socket;
     }
 
     /**

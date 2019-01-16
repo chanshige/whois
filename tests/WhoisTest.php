@@ -123,9 +123,6 @@ class WhoisTest extends CommonTestCase
         $response = $whois->query('verisign.com');
 
         $this->assertTrue(is_array($response->raw()));
-        $this->assertTrue($response->isRegistered());
-        $this->assertFalse($response->isReserved());
-        $this->assertFalse($response->isClientHold());
 
         $response = $whois->withQuery('afilias.info');
         $this->assertInstanceOf('Chanshige\Whois', $response);

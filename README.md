@@ -1,14 +1,16 @@
-[![Packagist](https://img.shields.io/badge/packagist-v2.1.0-blue.svg)](https://packagist.org/packages/chanshige/whois)
+[![Packagist](https://img.shields.io/badge/packagist-v2.2.0-blue.svg)](https://packagist.org/packages/chanshige/whois)
 [![Build Status](https://travis-ci.org/chanshige/whois.svg?branch=master)](https://travis-ci.org/chanshige/whois)
 [![Coverage Status](https://coveralls.io/repos/github/chanshige/whois/badge.svg?branch=master)](https://coveralls.io/github/chanshige/whois?branch=master)
 
 # chanshige/whois
-domain registered information(whois) search.
+domain registered information(whois) search.  
+ドメインのWHOIS情報を検索するライブラリです。  
+様々なTLD(com/net/jp...)で、広く検索することができます。  
 
 ## Installation
 With Composer
 ```
-$ composer require chanshige/whois 'v2.1.0'
+$ composer require chanshige/whois 'v2.2.0'
 ```
 
 ## usage
@@ -19,50 +21,28 @@ require __DIR__ . '/vendor/autoload.php';
 $whois = new \Chanshige\Whois();
 
 try {
-    $whois->query('your-domain.name', 'whois.server.host');
-    $result = $whois->results();
+    /* 基本的なリクエスト
+     * 
+     * 第二引数に、WHOISサーバー名を指定してリクエストも可能です。
+     * ※ WHOISサーバーを指定しない場合は、IANAにサーバー名を問い合わせ
+     * 　存在すれば、自動的にリクエストを行い、結果を返します。
+     */
+    $response = $whois->query('nic.com');
+    // 新しいオブジェクトを生成してリクエストする場合
+    $whois->withQuery('nic.com');
     
-    var_dump($result);
+    
+    /* 結果を項目ごとに配列として取得する場合 */
+    $response->results();
+    
+    /* 結果をそのまま取得したい場合 */
+    $response->raw();
 } catch (Exception $e) {
-    var_dump($e->getMessage());
+    echo ($e->getMessage());
 }
 ?>
 
-TLDに対応するWHOISサーバーを指定しない場合は、IANAにサーバー名を問い合わせ、  
-存在すれば、自動的にリクエストを行い、結果を返します。
-
 ```
-#### result type
-- isRegistered()  
-登録済みドメインかどうか(bool)
-
-- isReserved()  
-予約文字列かどうか(bool)
-
-- isClientHold()  
-ClientHoldとなっているかどうか(bool)
-
-- results()  
-上3つとWHOISを細分化したデータを返す(array)
-```
-'tld' => string,
-'registered' => bool,
-'reserved' => bool,
-'client_hold' => bool,
-'detail' => [
-   'registrant' => array(),
-   'admin' => array(),
-   'tech' => array(),
-   'billing' => array(),
-   'status' => array(),
-   'date' => array(),
-   'name_server' => array(),
-]
-```
-
-- raw()  
-加工せず取得したデータのまま返す(array)
-
 ## test (with coverage)
 `$ composer test`  
 
