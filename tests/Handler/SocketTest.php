@@ -56,16 +56,4 @@ class SocketTest extends CommonTestCase
         $this->socket->open('whois.verisign-grs.com')->close();
         $this->socket->puts('verisign-grs.com');
     }
-
-    /**
-     * @expectedException \Chanshige\Exception\SocketExecutionException
-     * @expectedExceptionMessage Read from socket failed.
-     * @expectedExceptionCode    403
-     */
-    public function testReadFailed()
-    {
-        $this->socket->open('whois.verisign-grs.com');
-        $this->socket->read();
-        $this->socket->close();
-    }
 }

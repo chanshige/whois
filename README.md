@@ -46,4 +46,4 @@ try {
 ## test (with coverage)
 `$ composer test`  
 
-![coverage](https://i.gyazo.com/4c025049592646cf9fa3bd803b678d59.png)
+![coverage](https://i.gyazo.com/16d118db742e94c1bb804083af6b0ef0.png)

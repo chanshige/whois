@@ -89,9 +89,9 @@ class WhoisTest extends CommonTestCase
     public function testQueryByIana()
     {
         $whois = new Whois();
-        $whois->query('verisign-grs.com');
-
-        $this->assertTrue($whois->isRegistered());
+        $whois->query('nic.app');
+        $response = $whois->results();
+        $this->assertTrue($response['registered']);
     }
 
     /**
@@ -129,5 +129,11 @@ class WhoisTest extends CommonTestCase
 
         $response = $whois->withQuery('nic.app');
         $this->assertInstanceOf('Chanshige\Whois', $response);
+    }
+
+    public function testToString()
+    {
+        $whois = new Whois();
+        $this->assertIsString((string)$whois->query('verisign.com'));
     }
 }
