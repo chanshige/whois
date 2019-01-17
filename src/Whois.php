@@ -18,6 +18,9 @@ use Chanshige\Whois\Server;
  */
 final class Whois implements WhoisInterface
 {
+    /** @var int Socket error retry count. */
+    private const MAX_ERROR_RETRY = 3;
+
     /** @var SocketInterface */
     private $socket;
 
@@ -55,11 +58,11 @@ final class Whois implements WhoisInterface
             $servername = $this->getWhoisServerName($this->tld);
         }
         $this->response = $this->invokeRequest($domain, $servername);
-        $rServername = $this->response->servername();
+        $responseServername = $this->response->servername();
 
         if ($this->response->isRegistered() && !CcTld::exists($this->tld) &&
-            strlen($rServername) > 0 && $servername !== $rServername) {
-            return $this->query($domain, $rServername);
+            strlen($responseServername) > 0 && $servername !== $responseServername) {
+            return $this->query($domain, $responseServername);
         }
 
         return $this;
@@ -128,17 +131,23 @@ final class Whois implements WhoisInterface
      */
     private function invokeRequest(string $domain, string $servername): ResponseParser
     {
-        try {
-            $response = $this->socket->open($servername)
-                ->puts($domain)
-                ->read();
+        $response = [];
+        $retry = true;
+        $cnt = 0;
+        do {
+            try {
+                $response = $this->socket->open($servername)
+                    ->puts($domain)
+                    ->read();
+                $retry = false;
+            } catch (SocketExecutionException $exception) {
+                $this->pauseOnRetry(++$cnt, $exception);
+            } finally {
+                $this->socket->close();
+            }
+        } while ($retry);
 
-            return new ResponseParser($response);
-        } catch (SocketExecutionException $e) {
-            throw new InvalidQueryException($e->getMessage(), $e->getCode());
-        } finally {
-            $this->socket->close();
-        }
+        return new ResponseParser($response);
     }
 
     /**
@@ -157,6 +166,21 @@ final class Whois implements WhoisInterface
         }
 
         return $servername;
+    }
+
+    /**
+     * Retry.
+     *
+     * @param integer    $retries
+     * @param \Throwable $throw
+     */
+    private function pauseOnRetry(int $retries, \Throwable $throw)
+    {
+        if ($retries <= self::MAX_ERROR_RETRY) {
+            sleep(3);
+            return;
+        }
+        throw new InvalidQueryException($throw->getMessage(), $throw->getCode());
     }
 
     /**
