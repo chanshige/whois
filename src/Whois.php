@@ -8,8 +8,8 @@ use Chanshige\Exception\SocketExecutionException;
 use Chanshige\Handler\Socket;
 use Chanshige\Handler\SocketInterface;
 use Chanshige\Whois\CcTld;
+use Chanshige\Whois\ResponseParser;
 use Chanshige\Whois\Server;
-use Chanshige\Whois\Util;
 
 /**
  * Class Whois
@@ -18,17 +18,17 @@ use Chanshige\Whois\Util;
  */
 final class Whois implements WhoisInterface
 {
-    /** @var string Iana whois server url. */
-    private const IANA_SERVER_URL = 'whois.iana.org';
+    /** @var int Socket error retry count. */
+    private const MAX_ERROR_RETRY = 3;
 
     /** @var SocketInterface */
     private $socket;
 
-    /** @var string top-level-domain. */
+    /** @var string top level domain. */
     private $tld;
 
-    /** @var array Response data. */
-    private $response = [];
+    /** @var ResponseParser */
+    private $response;
 
     /**
      * Whois constructor.
@@ -45,30 +45,24 @@ final class Whois implements WhoisInterface
     }
 
     /**
-     * Request Whois query.
+     * Whois query.
      *
      * @param string $domain
      * @param string $servername
-     * @return self
+     * @return Whois
      */
-    public function query(string $domain, string $servername = ''): WhoisInterface
+    public function query(string $domain, string $servername = ''): Whois
     {
         $this->tld = get_tld($domain);
-
         if (strlen($servername) === 0) {
             $servername = $this->getWhoisServerName($this->tld);
         }
-
         $this->response = $this->invokeRequest($domain, $servername);
+        $responseServername = $this->response->servername();
 
-        if ($this->isRequestToRegistrarServer()) {
-            $registrar = Util::extractWhoisServerName($this->response);
-            // not found.
-            if (strlen($registrar) === 0) {
-                return $this;
-            }
-
-            $this->response = $this->invokeRequest($domain, $registrar);
+        if ($this->response->isRegistered() && !CcTld::exists($this->tld) &&
+            strlen($responseServername) > 0 && $servername !== $responseServername) {
+            return $this->query($domain, $responseServername);
         }
 
         return $this;
@@ -77,60 +71,13 @@ final class Whois implements WhoisInterface
     /**
      * @param string $domain
      * @param string $servername
-     * @return self
+     * @return Whois
      */
-    public function withQuery(string $domain, string $servername = ''): WhoisInterface
+    public function withQuery(string $domain, string $servername = ''): Whois
     {
         $whois = new self($this->socket);
 
         return $whois->query($domain, $servername);
-    }
-
-    /**
-     * Registered domain.
-     *
-     * @return bool
-     */
-    public function isRegistered(): bool
-    {
-        $pattern = implode("|", [
-            'No match for',
-            'NOT FOUND',
-            'No Data Found',
-            'has not been registered',
-            'does not exist',
-            'No match!!',
-            'available for registration',
-        ]);
-
-        return count(preg_grep("/{$pattern}/mi", $this->response)) === 0;
-    }
-
-    /**
-     * Reserved domain.
-     *
-     * @return bool
-     */
-    public function isReserved(): bool
-    {
-        $pattern = implode("|", [
-            'reserved name',
-            'Reserved Domain',
-            'registry reserved',
-            'has been reserved',
-        ]);
-
-        return count(preg_grep("/{$pattern}/mi", $this->response)) > 0;
-    }
-
-    /**
-     * Is client hold status.
-     *
-     * @return bool
-     */
-    public function isClientHold(): bool
-    {
-        return count(preg_grep('/^(.*)Status(.*)clientHold/mi', $this->response)) > 0;
     }
 
     /**
@@ -142,9 +89,9 @@ final class Whois implements WhoisInterface
     {
         return [
             'tld' => $this->tld,
-            'registered' => $this->isRegistered(),
-            'reserved' => $this->isReserved(),
-            'client_hold' => $this->isClientHold(),
+            'registered' => $this->response->isRegistered(),
+            'reserved' => $this->response->isReserved(),
+            'client_hold' => $this->response->isClientHold(),
             'detail' => (CcTld::exists($this->tld) ? $this->raw() : $this->detail())
         ];
     }
@@ -157,13 +104,13 @@ final class Whois implements WhoisInterface
     public function detail(): array
     {
         return [
-            'registrant' => preg_grep_values('/^Registrant/', $this->response),
-            'admin' => preg_grep_values('/^Admin/', $this->response),
-            'tech' => preg_grep_values('/^Tech/', $this->response),
-            'billing' => preg_grep_values('/^Billing/', $this->response),
-            'status' => preg_grep_values('/^(.*)Status:/', $this->response),
-            'date' => preg_grep_values('/^(.*)Date:/', $this->response),
-            'name_server' => preg_grep_values('/^Name Server/', $this->response)
+            'registrant' => $this->response->registrant(),
+            'admin' => $this->response->admin(),
+            'tech' => $this->response->tech(),
+            'billing' => $this->response->billing(),
+            'status' => $this->response->status(),
+            'date' => $this->response->dates(),
+            'name_server' => $this->response->nameserver()
         ];
     }
 
@@ -174,27 +121,33 @@ final class Whois implements WhoisInterface
      */
     public function raw(): array
     {
-        return $this->response;
+        return $this->response->getResponse();
     }
 
     /**
      * @param string $domain
      * @param string $servername
-     * @return array
-     * @throws InvalidQueryException
+     * @return ResponseParser
      */
-    private function invokeRequest(string $domain, string $servername): array
+    private function invokeRequest(string $domain, string $servername): ResponseParser
     {
-        try {
-            $response = $this->socket->open($servername)
-                ->puts($domain)
-                ->read();
-            return $response;
-        } catch (SocketExecutionException $e) {
-            throw new InvalidQueryException($e->getMessage(), $e->getCode());
-        } finally {
-            $this->socket->close();
-        }
+        $response = [];
+        $retry = true;
+        $cnt = 0;
+        do {
+            try {
+                $response = $this->socket->open($servername)
+                    ->puts($domain)
+                    ->read();
+                $retry = false;
+            } catch (SocketExecutionException $exception) {
+                $this->pauseOnRetry(++$cnt, $exception);
+            } finally {
+                $this->socket->close();
+            }
+        } while ($retry);
+
+        return new ResponseParser($response);
     }
 
     /**
@@ -203,18 +156,11 @@ final class Whois implements WhoisInterface
      */
     private function getWhoisServerName(string $tld): string
     {
-        return Server::has($tld) ? Server::get($tld) : $this->findWhoisServerFromIana($tld);
-    }
+        if (Server::has($tld)) {
+            return Server::get($tld);
+        }
 
-    /**
-     * @param string $tld
-     * @return string
-     * @throws InvalidQueryException
-     */
-    private function findWhoisServerFromIana(string $tld): string
-    {
-        $request = $this->invokeRequest($tld, self::IANA_SERVER_URL);
-        $servername = Util::extractWhoisName($request);
+        $servername = $this->invokeRequest($tld, 'whois.iana.org')->servername();
         if (strlen($servername) === 0) {
             throw new InvalidQueryException('Failed to find whois server from iana database.');
         }
@@ -223,10 +169,25 @@ final class Whois implements WhoisInterface
     }
 
     /**
-     * @return bool
+     * Retry.
+     *
+     * @param integer    $retries
+     * @param \Throwable $throw
      */
-    private function isRequestToRegistrarServer(): bool
+    private function pauseOnRetry(int $retries, \Throwable $throw)
     {
-        return $this->isRegistered() && !CcTld::exists($this->tld);
+        if ($retries <= self::MAX_ERROR_RETRY) {
+            sleep(3);
+            return;
+        }
+        throw new InvalidQueryException($throw->getMessage(), $throw->getCode());
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return var_export($this->results(), true);
     }
 }

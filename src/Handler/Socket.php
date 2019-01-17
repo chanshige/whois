@@ -71,9 +71,10 @@ final class Socket implements SocketInterface
         if (!$resource) {
             throw new SocketExecutionException(self::$errCodes[Socket::ERROR_OPEN], Socket::ERROR_OPEN);
         }
-        $this->resource = $resource;
+        $socket = clone $this;
+        $socket->resource = $resource;
 
-        return $this;
+        return $socket;
     }
 
     /**
@@ -103,11 +104,7 @@ final class Socket implements SocketInterface
     {
         $data = [];
         while (!feof($this->resource)) {
-            $buffer = fgets($this->resource);
-            if ($buffer === false) {
-                throw new SocketExecutionException(self::$errCodes[Socket::ERROR_READ], Socket::ERROR_READ);
-            }
-            $data[] = trim($buffer);
+            $data[] = trim(fgets($this->resource));
         }
 
         return $data;
@@ -121,7 +118,7 @@ final class Socket implements SocketInterface
     public function close(): bool
     {
         if (!is_resource($this->resource)) {
-            return false;
+            return true;
         }
 
         return fclose($this->resource);
