@@ -122,6 +122,7 @@ final class ResponseParser implements ResponseParserInterface
             'does not exist',
             'No match!!',
             'available for registration',
+            'No entries found',
         ]);
 
         return count(preg_grep("/{$pattern}/mi", $this->response)) === 0;
