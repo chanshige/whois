@@ -33,7 +33,7 @@ final class ResponseParser implements ResponseParserInterface
             return '';
         }
 
-        return $servername;
+        return strtolower(trim($servername));
     }
 
     /**

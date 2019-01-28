@@ -71,15 +71,15 @@ final class Whois implements WhoisInterface
     {
         $this->domain = $domain;
         $this->tld = get_tld($domain);
-        if (strlen($servername) === 0) {
-            $servername = $this->getWhoisServerName($this->tld);
-        }
-        $this->response = $this->invokeRequest($domain, $servername);
-        $this->servername = $this->response->servername();
+        $this->servername = strlen($servername) === 0 ?
+            $this->getWhoisServerName($this->tld) : $servername;
 
+        $this->response = $this->invokeRequest($domain, $this->servername);
+
+        $registrar = $this->response->servername();
         if ($this->response->isRegistered() && !CcTld::exists($this->tld) &&
-            strlen($this->servername) > 0 && $servername !== $this->servername) {
-            return $this->query($domain, $this->servername);
+            strlen($registrar) > 0 && $registrar !== $this->servername) {
+            return $this->query($domain, $registrar);
         }
 
         return $this;
@@ -92,9 +92,7 @@ final class Whois implements WhoisInterface
      */
     public function withQuery(string $domain, string $servername = ''): Whois
     {
-        $whois = new self($this->socket);
-
-        return $whois->query($domain, $servername);
+        return (new self($this->socket))->query($domain, $servername);
     }
 
     /**

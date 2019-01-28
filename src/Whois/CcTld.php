@@ -82,5 +82,6 @@ final class CcTld extends ListAbstract
         'vn',
         'id',
         'tw',
+        'fr',
     ];
 }
