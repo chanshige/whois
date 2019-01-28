@@ -18,14 +18,20 @@ use Chanshige\Whois\Server;
  */
 final class Whois implements WhoisInterface
 {
-    /** @var int Socket error retry count. */
-    private const MAX_ERROR_RETRY = 3;
-
     /** @var SocketInterface */
     private $socket;
 
+    /** @var int Socket error retry count. */
+    private $retryCount = 2;
+
     /** @var string top level domain. */
     private $tld;
+
+    /** @var string domain name. */
+    private $domain;
+
+    /** @var string server name. */
+    private $servername;
 
     /** @var ResponseParser */
     private $response;
@@ -45,6 +51,16 @@ final class Whois implements WhoisInterface
     }
 
     /**
+     * Set request retry count.
+     *
+     * @param int $cnt
+     */
+    public function setRetryCount(int $cnt)
+    {
+        $this->retryCount = $cnt;
+    }
+
+    /**
      * Whois query.
      *
      * @param string $domain
@@ -53,16 +69,17 @@ final class Whois implements WhoisInterface
      */
     public function query(string $domain, string $servername = ''): Whois
     {
+        $this->domain = $domain;
         $this->tld = get_tld($domain);
         if (strlen($servername) === 0) {
             $servername = $this->getWhoisServerName($this->tld);
         }
         $this->response = $this->invokeRequest($domain, $servername);
-        $responseServername = $this->response->servername();
+        $this->servername = $this->response->servername();
 
         if ($this->response->isRegistered() && !CcTld::exists($this->tld) &&
-            strlen($responseServername) > 0 && $servername !== $responseServername) {
-            return $this->query($domain, $responseServername);
+            strlen($this->servername) > 0 && $servername !== $this->servername) {
+            return $this->query($domain, $this->servername);
         }
 
         return $this;
@@ -88,6 +105,8 @@ final class Whois implements WhoisInterface
     public function results(): array
     {
         return [
+            'domain' => $this->domain,
+            'servername' => $this->servername,
             'tld' => $this->tld,
             'registered' => $this->response->isRegistered(),
             'reserved' => $this->response->isReserved(),
@@ -176,8 +195,8 @@ final class Whois implements WhoisInterface
      */
     private function pauseOnRetry(int $retries, \Throwable $throw)
     {
-        if ($retries <= self::MAX_ERROR_RETRY) {
-            sleep(3);
+        if ($retries <= $this->retryCount) {
+            usleep((int)(pow(4, $retries) * 100000) + 600000);
             return;
         }
         throw new InvalidQueryException($throw->getMessage(), $throw->getCode());
