@@ -98,7 +98,7 @@ class WhoisTest extends CommonTestCase
 
     /**
      * @expectedException \Chanshige\Exception\InvalidQueryException
-     * @expectedExceptionMessage Failed to find whois server from iana database.
+     * @expectedExceptionMessage Could not find to gmo whois server from iana database.
      */
     public function testFailedQueryByIana()
     {
