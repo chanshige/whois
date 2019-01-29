@@ -47,6 +47,8 @@ class WhoisTest extends CommonTestCase
         );
 
         $expected = [
+            'domain' => 'chanshige.com.stub',
+            'servername' => 'whois.chanshige.com.stub',
             'tld' => 'com.stub',
             'registered' => true,
             'reserved' => false,
@@ -96,7 +98,7 @@ class WhoisTest extends CommonTestCase
 
     /**
      * @expectedException \Chanshige\Exception\InvalidQueryException
-     * @expectedExceptionMessage Failed to find whois server from iana database.
+     * @expectedExceptionMessage Could not find to gmo whois server from iana database.
      */
     public function testFailedQueryByIana()
     {
@@ -111,6 +113,7 @@ class WhoisTest extends CommonTestCase
     public function testFailedQuery()
     {
         $whois = new Whois();
+        $whois->setRetryCount(3);
         $whois->query('aaa.com', 'VERISIGN-GRS.COM');
     }
 
