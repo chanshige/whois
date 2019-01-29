@@ -179,7 +179,8 @@ final class Whois implements WhoisInterface
 
         $servername = $this->invokeRequest($tld, 'whois.iana.org')->servername();
         if (strlen($servername) === 0) {
-            throw new InvalidQueryException('Failed to find whois server from iana database.');
+            throw new InvalidQueryException('Could not find to ' .
+                $tld . ' whois server from iana database.');
         }
 
         return $servername;
