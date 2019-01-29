@@ -113,6 +113,7 @@ class WhoisTest extends CommonTestCase
     public function testFailedQuery()
     {
         $whois = new Whois();
+        $whois->setRetryCount(3);
         $whois->query('aaa.com', 'VERISIGN-GRS.COM');
     }
 
