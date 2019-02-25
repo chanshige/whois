@@ -29,13 +29,11 @@ final class Socket implements SocketInterface
 
     private const ERROR_OPEN = 400;
     private const ERROR_PUTS = 405;
-    private const ERROR_READ = 403;
 
     /** @var array $errCodes */
     private static $errCodes = [
         Socket::ERROR_OPEN => 'Failed to open socket connection.',
         Socket::ERROR_PUTS => 'Write to socket failed.',
-        Socket::ERROR_READ => 'Read from socket failed.'
     ];
 
     /**
@@ -86,13 +84,17 @@ final class Socket implements SocketInterface
 
     /**
      * {@inheritdoc}
-     * @throws SocketExecutionException
      */
     public function read(): array
     {
         $data = [];
         while (!feof($this->resource)) {
-            $data[] = trim(fgets($this->resource));
+            $buffer = fgets($this->resource);
+            if ($buffer === false) {
+                break;
+            }
+
+            $data[] = trim($buffer);
         }
 
         return $data;
