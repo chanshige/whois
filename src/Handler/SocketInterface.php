@@ -9,32 +9,48 @@ namespace Chanshige\Handler;
 interface SocketInterface
 {
     /**
-     * @param integer $portNo
+     * Set port number.
+     *
+     * @param int $portNo
+     * @return void
      */
-    public function setPort(int $portNo);
+    public function setPort(int $portNo): void;
 
     /**
-     * @param integer $seconds
+     * Set timeout.
+     *
+     * @param int $seconds
+     * @return void
      */
-    public function setTimeout(int $seconds);
+    public function setTimeout(int $seconds): void;
 
     /**
+     * Open Internet or Unix domain socket connection.
+     *
      * @param string $host
+     * @return SocketInterface
      */
     public function open(string $host);
 
     /**
+     * Binary-safe file write.
+     *
      * @param string $value
+     * @return SocketInterface
      */
     public function puts(string $value);
 
     /**
-     * @return array
+     * Gets line from file pointer.
+     *
+     * @return iterable
      */
-    public function read();
+    public function read(): iterable;
 
     /**
+     * Closes an open file pointer.
+     *
      * @return bool
      */
-    public function close();
+    public function close(): bool;
 }

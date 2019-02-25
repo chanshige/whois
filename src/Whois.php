@@ -22,7 +22,7 @@ final class Whois implements WhoisInterface
     private $socket;
 
     /** @var int Socket error retry count. */
-    private $retryCount = 2;
+    private $retryCount = 3;
 
     /** @var string top level domain. */
     private $tld;
@@ -61,11 +61,7 @@ final class Whois implements WhoisInterface
     }
 
     /**
-     * Whois query.
-     *
-     * @param string $domain
-     * @param string $servername
-     * @return Whois
+     * {@inheritdoc}
      */
     public function query(string $domain, string $servername = ''): Whois
     {
@@ -86,9 +82,7 @@ final class Whois implements WhoisInterface
     }
 
     /**
-     * @param string $domain
-     * @param string $servername
-     * @return Whois
+     * {@inheritdoc}
      */
     public function withQuery(string $domain, string $servername = ''): Whois
     {
@@ -96,9 +90,7 @@ final class Whois implements WhoisInterface
     }
 
     /**
-     * WhoisInformation results.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function results(): array
     {
@@ -109,14 +101,13 @@ final class Whois implements WhoisInterface
             'registered' => $this->response->isRegistered(),
             'reserved' => $this->response->isReserved(),
             'client_hold' => $this->response->isClientHold(),
-            'detail' => (CcTld::exists($this->tld) ? $this->raw() : $this->detail())
+            'detail' => (!CcTld::exists($this->tld) ? $this->detail() : []),
+            'raw' => $this->raw()
         ];
     }
 
     /**
-     * Return result details.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function detail(): array
     {
@@ -132,9 +123,7 @@ final class Whois implements WhoisInterface
     }
 
     /**
-     * Return raw data.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function raw(): array
     {
@@ -149,16 +138,16 @@ final class Whois implements WhoisInterface
     private function invokeRequest(string $domain, string $servername): ResponseParser
     {
         $response = [];
-        $retry = true;
+        $retry = false;
         $cnt = 0;
         do {
             try {
                 $response = $this->socket->open($servername)
                     ->puts($domain)
                     ->read();
-                $retry = false;
             } catch (SocketExecutionException $exception) {
                 $this->pauseOnRetry(++$cnt, $exception);
+                $retry = true;
             } finally {
                 $this->socket->close();
             }
@@ -202,10 +191,12 @@ final class Whois implements WhoisInterface
     }
 
     /**
+     * Return a json string response.
+     *
      * @return string
      */
     public function __toString()
     {
-        return var_export($this->results(), true);
+        return json_encode($this->results(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 }

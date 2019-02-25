@@ -29,7 +29,8 @@
   },
   "require": {
     "php": ">=7.1",
-    "ext-intl": "*"
+    "ext-intl": "*",
+    "ext-json": "*"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "*",

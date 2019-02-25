@@ -33,30 +33,23 @@ class SocketStub implements SocketInterface
     ];
 
     /**
-     * @param int $portNo
-     * @return SocketInterface
+     * {@inheritdoc}
      */
-    public function setPort(int $portNo)
-    {
-        $this->port = $portNo;
-
-        return $this;
-    }
-
-    /**
-     * @param int $seconds
-     * @return SocketInterface
-     */
-    public function setTimeout(int $seconds)
+    public function setTimeout(int $seconds): void
     {
         $this->timeout = $seconds;
-
-        return $this;
     }
 
     /**
-     * @param string $host
-     * @return SocketInterface
+     * {@inheritdoc}
+     */
+    public function setPort(int $portNo): void
+    {
+        $this->port = $portNo;
+    }
+
+    /**
+     * {@inheritdoc}
      * @throws SocketExecutionException
      */
     public function open(string $host)
@@ -71,8 +64,7 @@ class SocketStub implements SocketInterface
     }
 
     /**
-     * @param string $value
-     * @return SocketInterface
+     * {@inheritdoc}
      * @throws SocketExecutionException
      */
     public function puts(string $value): SocketInterface
@@ -87,7 +79,7 @@ class SocketStub implements SocketInterface
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      * @throws SocketExecutionException
      */
     public function read(): array
@@ -106,7 +98,7 @@ class SocketStub implements SocketInterface
     }
 
     /**
-     * @return bool
+     * {@inheritdoc}
      */
     public function close(): bool
     {

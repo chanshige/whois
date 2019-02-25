@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Chanshige\Handler;
 
 use Chanshige\Exception\SocketExecutionException;
@@ -37,32 +39,23 @@ final class Socket implements SocketInterface
     ];
 
     /**
-     * Set port number.
-     *
-     * @param int $portNo
-     * @return void
+     * {@inheritdoc}
      */
-    public function setPort(int $portNo)
+    public function setPort(int $portNo): void
     {
         $this->port = $portNo;
     }
 
     /**
-     * Set timeout.
-     *
-     * @param int $seconds
-     * @return void
+     * {@inheritdoc}
      */
-    public function setTimeout(int $seconds)
+    public function setTimeout(int $seconds): void
     {
         $this->timeout = $seconds;
     }
 
     /**
-     * Open Internet or Unix domain socket connection.
-     *
-     * @param string $host
-     * @return Socket
+     * {@inheritdoc}
      * @throws SocketExecutionException
      */
     public function open(string $host): Socket
@@ -78,16 +71,13 @@ final class Socket implements SocketInterface
     }
 
     /**
-     * Binary-safe file write.
-     *
-     * @param string $value
-     * @return Socket
+     * {@inheritdoc}
      * @throws SocketExecutionException
      */
     public function puts(string $value): Socket
     {
-        $res = @fputs($this->resource, "{$value}\r\n");
-        if (!$res) {
+        $result = @fwrite($this->resource, $value . PHP_EOL);
+        if ($result === false) {
             throw new SocketExecutionException(self::$errCodes[Socket::ERROR_PUTS], Socket::ERROR_PUTS);
         }
 
@@ -95,9 +85,7 @@ final class Socket implements SocketInterface
     }
 
     /**
-     * Gets line from file pointer.
-     *
-     * @return array
+     * {@inheritdoc}
      * @throws SocketExecutionException
      */
     public function read(): array
@@ -111,9 +99,7 @@ final class Socket implements SocketInterface
     }
 
     /**
-     * Closes an open file pointer.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function close(): bool
     {
