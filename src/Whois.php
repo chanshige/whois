@@ -10,13 +10,14 @@ use Chanshige\Handler\SocketInterface;
 use Chanshige\Whois\CcTld;
 use Chanshige\Whois\ResponseParser;
 use Chanshige\Whois\Server;
+use JsonSerializable;
 
 /**
  * Class Whois
  *
  * @package Chanshige
  */
-final class Whois implements WhoisInterface
+final class Whois implements WhoisInterface, JsonSerializable
 {
     /** @var SocketInterface */
     private $socket;
@@ -131,6 +132,14 @@ final class Whois implements WhoisInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function jsonSerialize()
+    {
+        return $this->results();
+    }
+
+    /**
      * @param string $domain
      * @param string $servername
      * @return ResponseParser
@@ -188,15 +197,5 @@ final class Whois implements WhoisInterface
             return;
         }
         throw new InvalidQueryException($throw->getMessage(), $throw->getCode());
-    }
-
-    /**
-     * Return a json string response.
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return json_encode($this->results(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 }
