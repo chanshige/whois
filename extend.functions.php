@@ -23,29 +23,6 @@ function get_tld($domain): string
 }
 
 /**
- *  Convert domain name to IDNA ASCII form.
- * (Internationalized Domain Name)
- *
- * @param string $value
- * @return string
- */
-function convert_idn_ascii(string $value): string
-{
-    return idn_to_ascii($value, 0, INTL_IDNA_VARIANT_UTS46);
-}
-
-/**
- * Convert domain name from IDNA ASCII to Unicode.
- *
- * @param string $value
- * @return string
- */
-function convert_idn_unicode(string $value): string
-{
-    return idn_to_utf8($value, 0, INTL_IDNA_VARIANT_UTS46);
-}
-
-/**
  * Return array entries that match the pattern
  *
  * @param string $pattern Pattern to search for, as a string.

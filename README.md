@@ -1,4 +1,4 @@
-[![Packagist](https://img.shields.io/badge/packagist-v2.3.0-blue.svg)](https://packagist.org/packages/chanshige/whois)
+[![Packagist](https://img.shields.io/badge/packagist-v3.0.0-blue.svg)](https://packagist.org/packages/chanshige/whois)
 [![Build Status](https://travis-ci.org/chanshige/whois.svg?branch=master)](https://travis-ci.org/chanshige/whois)
 [![Coverage Status](https://coveralls.io/repos/github/chanshige/whois/badge.svg?branch=master)](https://coveralls.io/github/chanshige/whois?branch=master)
 
@@ -10,7 +10,7 @@ domain registered information(whois) search.
 ## Installation
 With Composer
 ```
-$ composer require chanshige/whois 'v2.3.0'
+$ composer require chanshige/whois 'v3.0.0'
 ```
 
 ## usage
@@ -31,19 +31,97 @@ try {
     // 新しいオブジェクトを生成してリクエストする場合
     $whois->withQuery('nic.com');
     
-    
-    /* 結果を項目ごとに配列として取得する場合 */
+    /* 結果を項目ごとに配列として取得する場合 [Array]*/
     $response->results();
-    
+
     /* 結果をそのまま取得したい場合 */
     $response->raw();
-} catch (Exception $e) {
+
+    /* json形式でencodeする場合、オブジェクトごと渡しても可能です */
+    json_encode($whois);
+    } catch (Exception $e) {
     echo ($e->getMessage());
 }
 ?>
-
 ```
+
+### response
+結果はArrayで、以下のように返却されます
+
+#### method: results
+```
+[
+  'domain' => (string)"domain.example",
+  'servername' => (string)"whois.server.example",
+  'tld' => (string)"example",
+  'registered' => (bool) 登録済みかどうか,
+  'reserved' => (bool) 予約ドメインかどうか,
+  'client_hold' => (bool) ClientHold ステータスかどうか,
+  'detail' => [
+    'registrant' => [
+      登録者情報
+    ],
+    'admin' => [
+      管理者情報
+    ],
+    'tech' => [
+      技術者情報
+    ],
+    'billing' => [
+      請求者情報
+    ],
+    'status' => [
+      ステータス
+    ],
+    'date' => [
+      登録・更新日
+    ],
+    'name_server' => [
+      ネームサーバー
+    ]
+  ]
+  'raw' => [
+    生データ
+  ]
+]
+```
+
+#### method: detail
+```
+[
+  'registrant' => [
+    登録者情報
+  ],
+  'admin' => [
+    管理者情報
+  ],
+  'tech' => [
+    技術者情報
+  ],
+  'billing' => [
+    請求者情報
+  ],
+  'status' => [
+    ステータス
+  ],
+  'date' => [
+    登録・更新日
+  ],
+  'name_server' => [
+    ネームサーバー
+  ]
+]
+```
+
+#### method: raw
+```php
+[
+  '生データ'
+]
+```
+
+
 ## test (with coverage)
 `$ composer test`  
 
-![coverage](https://i.gyazo.com/6803942e0778836da9a7329c517c1659.png)
+![coverage](https://i.gyazo.com/0a171bd028bcb3cdcf506016a66d44e8.png)
