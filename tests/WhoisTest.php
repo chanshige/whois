@@ -169,9 +169,9 @@ class WhoisTest extends CommonTestCase
         $this->assertInstanceOf('Chanshige\Whois', $response);
     }
 
-    public function testToString()
+    public function testJsonEncode()
     {
         $whois = new Whois();
-        $this->assertIsString((string)$whois->query('verisign.com'));
+        $this->assertIsString(json_encode($whois->query('verisign.com')));
     }
 }

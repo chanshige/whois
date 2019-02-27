@@ -33,10 +33,13 @@ try {
     
     /* 結果を項目ごとに配列として取得する場合 [Array]*/
     $response->results();
-    
+
     /* 結果をそのまま取得したい場合 */
     $response->raw();
-} catch (Exception $e) {
+
+    /* json形式でencodeする場合、オブジェクトごと渡しても可能です */
+    json_encode($whois);
+    } catch (Exception $e) {
     echo ($e->getMessage());
 }
 ?>
