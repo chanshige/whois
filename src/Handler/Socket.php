@@ -74,7 +74,7 @@ final class Socket implements SocketInterface
      */
     public function puts(string $value): Socket
     {
-        $result = @fwrite($this->resource, $value . PHP_EOL);
+        $result = @fwrite($this->resource, "{$value}\r\n");
         if ($result === false) {
             throw new SocketExecutionException(self::$errCodes[Socket::ERROR_PUTS], Socket::ERROR_PUTS);
         }
