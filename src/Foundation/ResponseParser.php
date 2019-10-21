@@ -1,23 +1,29 @@
 <?php
-namespace Chanshige\Whois;
+namespace Chanshige\Foundation;
+
+use Traversable;
+use function preg_grep_values;
 
 /**
  * Class ResponseParser
  *
- * @package Chanshige\Whois
+ * @package Chanshige\Foundation
  */
 final class ResponseParser implements ResponseParserInterface
 {
-    private $response;
+    /** @var array */
+    private $input;
 
     /**
-     * ResponseParser constructor.
-     *
-     * @param array $response
+     * @param iterable $input
+     * @return ResponseParser
      */
-    public function __construct(array $response)
+    public function __invoke(iterable $input): ResponseParserInterface
     {
-        $this->response = $response;
+        $this->input = $input instanceof Traversable ?
+            iterator_to_array($input) : $input;
+
+        return $this;
     }
 
     /**
@@ -28,7 +34,7 @@ final class ResponseParser implements ResponseParserInterface
     public function servername(): string
     {
         $pattern = ['/^whois:\s+/', '/(.*)Whois Server:\s+/i'];
-        $servername = current(preg_filter($pattern, '', (array)$this->response));
+        $servername = current(preg_filter($pattern, '', $this->input));
         if ($servername === false) {
             return '';
         }
@@ -43,7 +49,7 @@ final class ResponseParser implements ResponseParserInterface
      */
     public function status(): array
     {
-        return preg_grep_values('/^(.*)Status:/', $this->response);
+        return preg_grep_values('/^(.*)Status:/', $this->input);
     }
 
     /**
@@ -53,7 +59,7 @@ final class ResponseParser implements ResponseParserInterface
      */
     public function registrant(): array
     {
-        return preg_grep_values('/^Registrant/', $this->response);
+        return preg_grep_values('/^Registrant/', $this->input);
     }
 
     /**
@@ -63,7 +69,7 @@ final class ResponseParser implements ResponseParserInterface
      */
     public function admin(): array
     {
-        return preg_grep_values('/^Admin/', $this->response);
+        return preg_grep_values('/^Admin/', $this->input);
     }
 
     /**
@@ -73,7 +79,7 @@ final class ResponseParser implements ResponseParserInterface
      */
     public function billing(): array
     {
-        return preg_grep_values('/^Billing/', $this->response);
+        return preg_grep_values('/^Billing/', $this->input);
     }
 
     /**
@@ -83,7 +89,7 @@ final class ResponseParser implements ResponseParserInterface
      */
     public function tech(): array
     {
-        return preg_grep_values('/^Tech/', $this->response);
+        return preg_grep_values('/^Tech/', $this->input);
     }
 
     /**
@@ -94,7 +100,7 @@ final class ResponseParser implements ResponseParserInterface
      */
     public function dates(): array
     {
-        return preg_grep_values('/^(.*)Date:/', $this->response);
+        return preg_grep_values('/^(.*)Date:/', $this->input);
     }
 
     /**
@@ -104,7 +110,7 @@ final class ResponseParser implements ResponseParserInterface
      */
     public function nameserver(): array
     {
-        return preg_grep_values('/^Name Server/', $this->response);
+        return preg_grep_values('/^Name Server/', $this->input);
     }
 
     /**
@@ -125,7 +131,7 @@ final class ResponseParser implements ResponseParserInterface
             'No entries found',
         ]);
 
-        return count(preg_grep("/{$pattern}/mi", $this->response)) === 0;
+        return count(preg_grep("/{$pattern}/mi", $this->input)) === 0;
     }
 
     /**
@@ -142,7 +148,7 @@ final class ResponseParser implements ResponseParserInterface
             'has been reserved',
         ]);
 
-        return count(preg_grep("/{$pattern}/mi", $this->response)) > 0;
+        return count(preg_grep("/{$pattern}/mi", $this->input)) > 0;
     }
 
     /**
@@ -152,14 +158,14 @@ final class ResponseParser implements ResponseParserInterface
      */
     public function isClientHold(): bool
     {
-        return count(preg_grep('/^(.*)Status(.*)clientHold/mi', $this->response)) > 0;
+        return count(preg_grep('/^(.*)Status(.*)clientHold/mi', $this->input)) > 0;
     }
 
     /**
      * @return array
      */
-    public function getResponse(): array
+    public function raw(): array
     {
-        return $this->response;
+        return $this->input;
     }
 }

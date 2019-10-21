@@ -19,11 +19,11 @@ $ composer require chanshige/whois 'v3.0'
 use Chanshige\Whois;
 $whois = new Whois();
 $whois->query('domain-name.example', 'whois.server.fqdn');
-$results = $whois->results(); // array response.
+$results = $whois->result(); // array response.
 
 // new instance with query request.
 $newInstance = $whois->withQuery('new.domain-name.example', 'whois.server.fqdn');
-$results = $newInstance->results();
+$results = $newInstance->result();
 ?>
 ```
 
