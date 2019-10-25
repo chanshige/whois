@@ -5,26 +5,19 @@ namespace Chanshige\Foundation\Handler;
 
 use Chanshige\Exception\SocketException;
 use Generator;
+use IteratorAggregate;
 use Throwable;
+use Traversable;
 
 /**
  * Class Socket
  *
  * @package Chanshige\Handler
  */
-class Socket implements SocketInterface
+class Socket implements SocketInterface, IteratorAggregate
 {
     /** @var resource */
     private $resource;
-
-    /** @var int $port */
-    private $port = 43;
-
-    /** @var int $timeout sec */
-    private $timeout = 5;
-
-    /** @var int $retryCount count */
-    private $retryCount = 3;
 
     /** @var int $errno */
     private $errno;
@@ -32,16 +25,20 @@ class Socket implements SocketInterface
     /** @var string $errStr error message */
     private $errStr;
 
+    /** @var array */
+    private $config = [
+        'port' => 43,
+        'timeout' => 5,
+        'retry_count' => 3
+    ];
+
     /**
      * Socket constructor.
-     *
      * {@inheritDoc}
      */
-    public function __construct(int $portNo = 43, int $timeout = 5, int $retryCount = 3)
+    public function __construct(array $config = [])
     {
-        $this->port = $portNo;
-        $this->timeout = $timeout;
-        $this->retryCount = $retryCount;
+        $this->applyConfig($config);
     }
 
     /**
@@ -71,13 +68,14 @@ class Socket implements SocketInterface
      */
     public function open(string $host): SocketInterface
     {
-        $resource = @fsockopen($host, $this->port, $this->errno, $this->errStr, $this->timeout);
-        if ($resource === false) {
+        $ro = @fsockopen($host, $this->config['port'], $this->errno, $this->errStr, $this->config['timeout']);
+
+        if ($ro === false) {
             throw new SocketException('Failed to open socket connection.', Socket::ERROR_OPEN);
         }
 
         $clone = clone $this;
-        $clone->resource = $resource;
+        $clone->resource = $ro;
 
         return $clone;
     }
@@ -120,17 +118,42 @@ class Socket implements SocketInterface
     }
 
     /**
+     * Retrieve an external iterator.
+     *
+     * @return Traversable An instance of an object.
+     */
+    public function getIterator()
+    {
+        return $this->read();
+    }
+
+    /**
      * @param int       $retries
      * @param Throwable $throw
      * @return bool
      * @throws SocketException
      */
-    protected function pauseOnRetry(int $retries, Throwable $throw)
+    private function pauseOnRetry(int $retries, Throwable $throw)
     {
-        if ($retries <= $this->retryCount) {
+        if ($retries <= $this->config['retry_count']) {
             usleep((int)(pow(4, $retries) * 100000) + 600000);
             return true;
         }
         throw new SocketException($throw->getMessage(), $throw->getCode());
+    }
+
+    /**
+     * Apply configuration key value.
+     *
+     * @param array $config
+     */
+    private function applyConfig(array $config)
+    {
+        foreach ($config as $key => $value) {
+            if (!array_key_exists($key, $this->config)) {
+                throw new SocketException($key . ' is either not part of the configuration key name.');
+            }
+            $this->config[$key] = $value;
+        }
     }
 }

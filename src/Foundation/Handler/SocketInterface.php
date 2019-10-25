@@ -17,11 +17,9 @@ interface SocketInterface
     /**
      * SocketInterface constructor.
      *
-     * @param int $portNo     port number.
-     * @param int $timeout    timeout.
-     * @param int $retryCount retry count.
+     * @param array $config
      */
-    public function __construct(int $portNo, int $timeout, int $retryCount);
+    public function __construct(array $config = []);
 
     /**
      * Invoke socket connection and write.

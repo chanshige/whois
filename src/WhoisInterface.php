@@ -17,7 +17,10 @@ interface WhoisInterface
      * @param SocketInterface         $socket
      * @param ResponseParserInterface $responseParser
      */
-    public function __construct(SocketInterface $socket, ResponseParserInterface $responseParser);
+    public function __construct(
+        SocketInterface $socket = null,
+        ResponseParserInterface $responseParser = null
+    );
 
     /**
      * Connect to the necessary servers to perform a domain whois query.
@@ -26,7 +29,7 @@ interface WhoisInterface
      * @param string $servername whois server name [option]
      * @return WhoisInterface
      */
-    public function query(string $domain, string $servername = '');
+    public function query(string $domain, string $servername = ''): WhoisInterface;
 
     /**
      *　Return an Instance with the domain whois query.

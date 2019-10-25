@@ -12,11 +12,11 @@ use function preg_grep_values;
 final class ResponseParser implements ResponseParserInterface
 {
     /** @var array */
-    private $input;
+    private $input = [];
 
     /**
      * @param iterable $input
-     * @return ResponseParser
+     * @return ResponseParserInterface
      */
     public function __invoke(iterable $input): ResponseParserInterface
     {

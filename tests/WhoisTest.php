@@ -111,4 +111,20 @@ class WhoisTest extends CommonTestCase
         $this->assertNotSame($withQuery, $query);
         $this->assertInstanceOf('Chanshige\Whois', $withQuery);
     }
+
+    public function testRequest()
+    {
+        $whois = new Whois();
+        $result = $whois->query('tanakashigeki.com')->result();
+        $this->assertInstanceOf('Chanshige\Foundation\ResponseParserInterface', $result);
+    }
+
+    /**
+     * @expectedException \Chanshige\Exception\InvalidQueryException
+     * @expectedExceptionMessage Could not find to example whois server from iana database.
+     */
+    public function testNotFind()
+    {
+        (new Whois)->query('example.example');
+    }
 }

@@ -10,6 +10,7 @@ use Chanshige\Foundation\Handler\SocketInterface;
 use Chanshige\Foundation\ResponseParser;
 use Chanshige\Foundation\ResponseParserInterface;
 use Chanshige\Foundation\ServersList;
+use IteratorAggregate;
 
 /**
  * Class Whois
@@ -47,12 +48,11 @@ final class Whois implements WhoisInterface
     /**
      * {@inheritdoc}
      */
-    public function query(string $domain, string $servername = '')
+    public function query(string $domain, string $servername = ''): WhoisInterface
     {
         $this->domain = $domain;
         $this->tld = get_tld($domain);
-        $this->servername = strlen($servername) === 0 ?
-            $this->findServerName($this->tld) : $servername;
+        $this->servername = strlen($servername) === 0 ? $this->findServerName($this->tld) : $servername;
         $this->response = $this->invoke($this->socket, $domain, $this->servername);
 
         $registrarServer = $this->response->servername();
@@ -97,6 +97,8 @@ final class Whois implements WhoisInterface
     }
 
     /**
+     * Find a whois servername from iana database.
+     *
      * @param string $tld
      * @return string
      * @throws InvalidQueryException
@@ -106,6 +108,7 @@ final class Whois implements WhoisInterface
         if (ServersList::has($tld)) {
             return ServersList::get($tld);
         }
+
         $servername = $this->invoke($this->socket, $tld, 'whois.iana.org')->servername();
         if (strlen($servername) > 0) {
             return $servername;
@@ -115,16 +118,18 @@ final class Whois implements WhoisInterface
     }
 
     /**
+     * Return a ResponseParser with whois result.
+     *
      * @param SocketInterface $socket
      * @param string          $domain
      * @param string          $servername
      * @return ResponseParserInterface
      */
-    private function invoke($socket, string $domain, string $servername)
+    private function invoke(SocketInterface $socket, string $domain, string $servername)
     {
-        /** @var SocketInterface $response */
-        $response = $socket($servername, $domain);
+        /** @var IteratorAggregate $it */
+        $it = $socket($servername, $domain);
 
-        return ($this->response)($response->read());
+        return ($this->response)($it);
     }
 }

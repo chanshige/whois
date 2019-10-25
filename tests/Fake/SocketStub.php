@@ -22,13 +22,11 @@ class SocketStub extends Socket
     /**
      * SocketStub constructor.
      *
-     * @param int $portNo
-     * @param int $timeout
-     * @param int $retryCount
+     * @param array $config
      */
-    public function __construct(int $portNo = 4343, int $timeout = 5, int $retryCount = 3)
+    public function __construct(array $config = [])
     {
-        parent::__construct($portNo, $timeout, $retryCount);
+        parent::__construct($config);
     }
 
     /**
