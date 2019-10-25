@@ -1,4 +1,4 @@
-[![Packagist](https://img.shields.io/badge/packagist-v3.0.1-blue.svg)](https://packagist.org/packages/chanshige/whois)
+[![Packagist](https://img.shields.io/badge/packagist-v4.0.0-blue.svg)](https://packagist.org/packages/chanshige/whois)
 [![Build Status](https://travis-ci.org/chanshige/whois.svg?branch=master)](https://travis-ci.org/chanshige/whois)
 [![Coverage Status](https://coveralls.io/repos/github/chanshige/whois/badge.svg?branch=master)](https://coveralls.io/github/chanshige/whois?branch=master)
 
@@ -10,46 +10,72 @@ domain registered information(whois) search.
 ## Installation
 With Composer
 ```
-$ composer require chanshige/whois 'v3.0'
+$ composer require chanshige/whois 'v4.0'
 ```
 
 ## usage
 ```php
 <?php
+use Chanshige\Foundation\ResponseParserInterface;
 use Chanshige\Whois;
-$whois = new Whois();
-$whois->query('domain-name.example', 'whois.server.fqdn');
-$results = $whois->results(); // array response.
 
-// new instance with query request.
-$newInstance = $whois->withQuery('new.domain-name.example', 'whois.server.fqdn');
-$results = $newInstance->results();
+$whois = new Whois;
+$whois->query('domain-name.example', 'whois.server.fqdn');
+
+/** @var ResponseParserInterface $response */
+$response = $whois->result();
+$response->raw(); // return a whois raw data.
 ?>
 ```
 
-## response.
+## ResponseParserInterface methods
 ```
-// Processed data.
-// 登録者・管理者・請求者情報など、情報毎に分割して結果を返します。(gTLDのみ)
-$whois->result();
+::raw()
+無加工でそのまま返却されます
 
-// Original(Raw) data. [Array]
-// WHOISサーバーから返された結果をそのまま返します。
-$whois->raw();
+::servername()
+whois サーバー名
 
-// To json_encode [Object => String]
-// json形式に加工したい場合は、以下のように渡すことができます。
-json_encode($whois);
+::registrant()
+登録者情報
+
+::admin()
+管理者情報
+
+::tech()
+技術者情報
+
+::billing()
+請求者情報
+
+::status()
+ドメインステータス
+
+::dates()
+ドメイン登録・更新日
+
+::nameserver()
+ネームサーバ情報
+
+::isRegistered()
+登録済みドメインかどうか
+
+::isReserved()
+予約語ドメインかどうか
+
+::isClientHold()
+利用制限ドメインかどうか
 ```
 
-## test (with coverage)
+## test
 `$ composer test`  
 
-![coverage](https://i.gyazo.com/0a171bd028bcb3cdcf506016a66d44e8.png)
+
+## coverage
+![coverage](https://i.gyazo.com/a986d5945bdd6b9603556cee0c0f90b6.png)
 
 ## License
 MIT
 
 ## Author
-
 [chanshige](https://twitter.com/chanshige)

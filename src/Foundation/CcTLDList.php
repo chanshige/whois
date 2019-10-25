@@ -1,16 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace Chanshige\Whois;
+namespace Chanshige\Foundation;
+
+use Chanshige\Foundation\Collection\ArrayList;
 
 /**
- * Class CcTld
+ * Class CcTLDList
  *
- * @package Chanshige\Whois
+ * @package Chanshige\Foundation\Collection
  */
-final class CcTld extends ListAbstract
+final class CcTLDList extends ArrayList
 {
-    protected static $lists = [
+    protected static $data = [
         'jp',
         'co.jp',
         'or.jp',

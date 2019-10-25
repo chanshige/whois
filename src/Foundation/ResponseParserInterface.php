@@ -1,14 +1,16 @@
 <?php
-namespace Chanshige\Whois;
+namespace Chanshige\Foundation;
 
 /**
  * Interface ResponseParserInterface
  *
- * @package Chanshige\Whois
+ * @package Chanshige\Foundation
  */
 interface ResponseParserInterface
 {
-    public function getResponse(): array;
+    public function __invoke(iterable $input): ResponseParserInterface;
+
+    public function raw(): array;
 
     public function servername(): string;
 

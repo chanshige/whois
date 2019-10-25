@@ -1,16 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace Chanshige\Whois;
+namespace Chanshige\Foundation;
+
+use Chanshige\Foundation\Collection\ArrayList;
 
 /**
- * Class Server
+ * Class ServersList
  *
- * @package Chanshige\Whois
+ * @package Chanshige\Foundation\Collection
  */
-final class Server extends ListAbstract
+final class ServersList extends ArrayList
 {
-    protected static $lists = [
+    protected static $data = [
         'com' => 'whois.internic.net',
         'net' => 'whois.internic.net',
         'info' => 'whois.afilias.net',

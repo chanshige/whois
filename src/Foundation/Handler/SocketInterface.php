@@ -1,28 +1,35 @@
 <?php
-namespace Chanshige\Handler;
+namespace Chanshige\Foundation\Handler;
+
+use Generator;
+use IteratorAggregate;
 
 /**
  * Interface SocketInterface
  *
  * @package Chanshige\Handler
  */
-interface SocketInterface
+interface SocketInterface extends IteratorAggregate
 {
-    /**
-     * Set port number.
-     *
-     * @param int $portNo
-     * @return void
-     */
-    public function setPort(int $portNo): void;
+    public const ERROR_OPEN = 10;
+    public const ERROR_PUTS = 11;
+    public const ERROR_REQUEST = 12;
 
     /**
-     * Set timeout.
+     * SocketInterface constructor.
      *
-     * @param int $seconds
-     * @return void
+     * @param array $config
      */
-    public function setTimeout(int $seconds): void;
+    public function __construct(array $config = []);
+
+    /**
+     * Invoke socket connection and write.
+     *
+     * @param string $host
+     * @param string $value
+     * @return SocketInterface
+     */
+    public function __invoke(string $host, string $value);
 
     /**
      * Open Internet or Unix domain socket connection.
@@ -43,9 +50,9 @@ interface SocketInterface
     /**
      * Gets line from file pointer.
      *
-     * @return iterable
+     * @return Generator
      */
-    public function read(): iterable;
+    public function read(): Generator;
 
     /**
      * Closes an open file pointer.
