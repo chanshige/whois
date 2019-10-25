@@ -2,13 +2,14 @@
 namespace Chanshige\Foundation\Handler;
 
 use Generator;
+use IteratorAggregate;
 
 /**
  * Interface SocketInterface
  *
  * @package Chanshige\Handler
  */
-interface SocketInterface
+interface SocketInterface extends IteratorAggregate
 {
     public const ERROR_OPEN = 10;
     public const ERROR_PUTS = 11;

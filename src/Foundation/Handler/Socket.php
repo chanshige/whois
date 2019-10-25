@@ -5,7 +5,6 @@ namespace Chanshige\Foundation\Handler;
 
 use Chanshige\Exception\SocketException;
 use Generator;
-use IteratorAggregate;
 use Throwable;
 use Traversable;
 
@@ -14,7 +13,7 @@ use Traversable;
  *
  * @package Chanshige\Handler
  */
-class Socket implements SocketInterface, IteratorAggregate
+class Socket implements SocketInterface
 {
     /** @var resource */
     private $resource;

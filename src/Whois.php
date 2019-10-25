@@ -10,7 +10,6 @@ use Chanshige\Foundation\Handler\SocketInterface;
 use Chanshige\Foundation\ResponseParser;
 use Chanshige\Foundation\ResponseParserInterface;
 use Chanshige\Foundation\ServersList;
-use IteratorAggregate;
 
 /**
  * Class Whois
@@ -127,9 +126,6 @@ final class Whois implements WhoisInterface
      */
     private function invoke(SocketInterface $socket, string $domain, string $servername)
     {
-        /** @var IteratorAggregate $it */
-        $it = $socket($servername, $domain);
-
-        return ($this->response)($it);
+        return ($this->response)($socket($servername, $domain));
     }
 }
