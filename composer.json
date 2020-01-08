@@ -4,7 +4,8 @@
   "keywords": [
     "whois",
     "domain",
-    "nic"
+    "nic",
+    "di"
   ],
   "type": "library",
   "license": "MIT",
@@ -19,7 +20,8 @@
       "extend.functions.php"
     ],
     "psr-4": {
-      "Chanshige\\": "src/"
+      "Chanshige\\": "src/",
+      "Chanshige\\Di\\": "di/"
     }
   },
   "autoload-dev": {
@@ -28,7 +30,8 @@
     }
   },
   "require": {
-    "php": ">=7.2"
+    "php": ">=7.2",
+    "aura/di": "^4.0"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "*",

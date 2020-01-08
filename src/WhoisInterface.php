@@ -18,8 +18,8 @@ interface WhoisInterface
      * @param ResponseParserInterface $responseParser
      */
     public function __construct(
-        SocketInterface $socket = null,
-        ResponseParserInterface $responseParser = null
+        SocketInterface $socket,
+        ResponseParserInterface $responseParser
     );
 
     /**
