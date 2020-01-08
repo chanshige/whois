@@ -1,11 +1,11 @@
 language: php
 php:
-  - 7.1
   - 7.2
   - 7.3
+  - 7.4
 
 before_script:
-  - composer require satooshi/php-coveralls:1.*
+  - composer require php-coveralls/php-coveralls
   - composer install --dev --prefer-source
 
 script:
