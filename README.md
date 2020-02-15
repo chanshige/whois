@@ -16,32 +16,17 @@ $ composer require chanshige/whois 'v4.0'
 ## usage
 ```php
 <?php
-use Chanshige\Foundation\Handler\Socket;
-use Chanshige\Foundation\ResponseParser;
 use Chanshige\Foundation\ResponseParserInterface;
-use Chanshige\Whois;
+use Chanshige\WhoisFactory;
 
-$config = [
-    'port' => 43,
-    'timeout' => 5,
-    'retry_count' => 3
-];
-
-// 
-$whois = new Whois(new Socket($config), new ResponseParser);
-
-// ※ Socket/ResponseParserは省略できます
-$whois = new Whois;
-
-$whois->query('domain-name.example', 'whois.server.fqdn');
-
-// ※ whois serverの指定も省略可能です。（tldからserver名を自動判定します)
+$whois = (new WhoisFactory())->build();
 $whois->query('domain-name.example');
+// 第2引数で、whoisリクエストを送るサーバを指定できます
+//$whois->query('domain-name.example', 'whois.server.fqdn');
 
 /** @var ResponseParserInterface $response */
 $response = $whois->result();
 $response->raw(); // return a whois raw data.
-?>
 ```
 
 ## ResponseParserInterface methods

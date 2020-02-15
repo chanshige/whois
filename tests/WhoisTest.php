@@ -2,6 +2,8 @@
 namespace Chanshige;
 
 use Chanshige\Fake\SocketStub;
+use Chanshige\Foundation\Handler\Socket;
+use Chanshige\Foundation\ResponseParser;
 
 /**
  * Class WhoisTest
@@ -19,7 +21,7 @@ class WhoisTest extends CommonTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->whois = new Whois(new SocketStub);
+        $this->whois = new Whois(new SocketStub(), new ResponseParser());
     }
 
     /**
@@ -114,7 +116,7 @@ class WhoisTest extends CommonTestCase
 
     public function testRequest()
     {
-        $whois = new Whois();
+        $whois = new Whois(new Socket(), new ResponseParser());
         $result = $whois->query('tanakashigeki.com')->result();
         $this->assertInstanceOf('Chanshige\Foundation\ResponseParserInterface', $result);
     }
@@ -125,6 +127,7 @@ class WhoisTest extends CommonTestCase
      */
     public function testNotFind()
     {
-        (new Whois)->query('example.example');
+        $whois = new Whois(new Socket(), new ResponseParser());
+        $whois->query('example.example');
     }
 }

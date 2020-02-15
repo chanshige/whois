@@ -5,9 +5,7 @@ namespace Chanshige;
 
 use Chanshige\Exception\InvalidQueryException;
 use Chanshige\Foundation\CcTLDList;
-use Chanshige\Foundation\Handler\Socket;
 use Chanshige\Foundation\Handler\SocketInterface;
-use Chanshige\Foundation\ResponseParser;
 use Chanshige\Foundation\ResponseParserInterface;
 use Chanshige\Foundation\ServersList;
 
@@ -37,11 +35,11 @@ final class Whois implements WhoisInterface
      * {@inheritDoc}
      */
     public function __construct(
-        SocketInterface $socket = null,
-        ResponseParserInterface $responseParser = null
+        SocketInterface $socket,
+        ResponseParserInterface $responseParser
     ) {
-        $this->socket = $socket ?? new Socket;
-        $this->response = $responseParser ?? new ResponseParser;
+        $this->socket = $socket;
+        $this->response = $responseParser;
     }
 
     /**
