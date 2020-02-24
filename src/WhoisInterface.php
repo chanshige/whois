@@ -1,4 +1,5 @@
 <?php
+
 namespace Chanshige;
 
 use Chanshige\Foundation\Handler\SocketInterface;
@@ -23,24 +24,6 @@ interface WhoisInterface
     );
 
     /**
-     * Connect to the necessary servers to perform a domain whois query.
-     *
-     * @param string $domain     domain name
-     * @param string $servername whois server name [option]
-     * @return WhoisInterface
-     */
-    public function query(string $domain, string $servername = ''): WhoisInterface;
-
-    /**
-     *　Return an Instance with the domain whois query.
-     *
-     * @param string $domain
-     * @param string $servername
-     * @return WhoisInterface (clone or new object)
-     */
-    public function withQuery(string $domain, string $servername);
-
-    /**
      * Return a whois request information.
      *
      * @return array
@@ -48,9 +31,18 @@ interface WhoisInterface
     public function info(): array;
 
     /**
+     * Connect to the necessary servers to perform a domain whois query.
+     *
+     * @param string $domain     domain name
+     * @param string $servername whois server name [option]
+     * @return WhoisInterface
+     */
+    public function query(string $domain, ?string $servername = null): WhoisInterface;
+
+    /**
      * Return a whois information.
      *
      * @return ResponseParserInterface
      */
-    public function result(): ResponseParserInterface;
+    public function response(): ResponseParserInterface;
 }

@@ -17,7 +17,7 @@
   ],
   "autoload": {
     "files": [
-      "extend.functions.php"
+      "src/Foundation/globals.php"
     ],
     "psr-4": {
       "Chanshige\\": "src/",

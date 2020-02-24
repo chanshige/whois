@@ -25,7 +25,7 @@ $whois->query('domain-name.example');
 //$whois->query('domain-name.example', 'whois.server.fqdn');
 
 /** @var ResponseParserInterface $response */
-$response = $whois->result();
+$response = $whois->response();
 $response->raw(); // return a whois raw data.
 ```
 

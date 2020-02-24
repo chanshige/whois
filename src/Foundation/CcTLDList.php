@@ -20,6 +20,7 @@ final class CcTLDList extends ArrayList
         'ac.jp',
         'ed.jp',
         'go.jp',
+        'ad.jp',
         'hokkaido.jp',
         'miyagi.jp',
         'fukushima.jp',

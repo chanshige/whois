@@ -1,19 +1,24 @@
 <?php
+
 namespace Chanshige\Foundation\Handler;
 
 use Generator;
-use IteratorAggregate;
 
 /**
  * Interface SocketInterface
  *
  * @package Chanshige\Handler
  */
-interface SocketInterface extends IteratorAggregate
+interface SocketInterface
 {
-    public const ERROR_OPEN = 10;
-    public const ERROR_PUTS = 11;
-    public const ERROR_REQUEST = 12;
+    /** @var int open error. */
+    public const ERROR_OPEN = 100;
+
+    /** @var int puts error. */
+    public const ERROR_PUTS = 101;
+
+    /** @var int request error. */
+    public const ERROR_REQUEST = 102;
 
     /**
      * SocketInterface constructor.

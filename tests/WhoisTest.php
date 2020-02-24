@@ -44,7 +44,7 @@ class WhoisTest extends CommonTestCase
 
         $this->assertEquals(
             'Domain Name: chanshige.com.stub',
-            $response->result()->raw()[2]
+            $response->response()->raw()[2]
         );
     }
 
@@ -88,13 +88,13 @@ class WhoisTest extends CommonTestCase
             '',
         ];
 
-        $this->assertEquals($expected, $response->result()->raw());
+        $this->assertEquals($expected, $response->response()->raw());
     }
 
     public function testRequestCcTld()
     {
         $response = $this->whois->query('chanshige.miyazaki.jp');
-        $this->assertEquals('Domain Name: miyazaki.jp', $response->result()->raw()[0]);
+        $this->assertEquals('Domain Name: miyazaki.jp', $response->response()->raw()[0]);
 
         $info = [
             'domain' => 'chanshige.miyazaki.jp',
@@ -104,20 +104,10 @@ class WhoisTest extends CommonTestCase
         $this->assertEquals($info, $response->info());
     }
 
-    public function testWithQuery()
-    {
-        $query = $this->whois->query('chanshige.com.stub');
-        $withQuery = $this->whois->withQuery('chanshige.com.stub');
-
-        $this->assertIsObject($withQuery);
-        $this->assertNotSame($withQuery, $query);
-        $this->assertInstanceOf('Chanshige\Whois', $withQuery);
-    }
-
     public function testRequest()
     {
         $whois = new Whois(new Socket(), new ResponseParser());
-        $result = $whois->query('tanakashigeki.com')->result();
+        $result = $whois->query('tanakashigeki.com')->response();
         $this->assertInstanceOf('Chanshige\Foundation\ResponseParserInterface', $result);
     }
 

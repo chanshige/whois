@@ -1,4 +1,12 @@
 <?php
+/*
+ * This file is part of the Chanshige\Whois package.
+ *
+ * (c) shigeki tanaka <dev@shigeki.tokyo>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 declare(strict_types=1);
 
 namespace Chanshige;
@@ -8,6 +16,8 @@ use Chanshige\Foundation\CcTLDList;
 use Chanshige\Foundation\Handler\SocketInterface;
 use Chanshige\Foundation\ResponseParserInterface;
 use Chanshige\Foundation\ServersList;
+
+use function get_tld;
 
 /**
  * Class Whois
@@ -23,13 +33,13 @@ final class Whois implements WhoisInterface
     private $response;
 
     /** @var string top level domain. */
-    private $tld;
+    private $tld = '';
 
     /** @var string domain name. */
-    private $domain;
+    private $domain = '';
 
     /** @var string server name. */
-    private $servername;
+    private $servername = '';
 
     /**
      * {@inheritDoc}
@@ -45,32 +55,23 @@ final class Whois implements WhoisInterface
     /**
      * {@inheritdoc}
      */
-    public function query(string $domain, string $servername = ''): WhoisInterface
+    public function query(string $domain, ?string $servername = null): WhoisInterface
     {
         $this->domain = $domain;
-        $this->tld = get_tld($domain);
-        $this->servername = strlen($servername) === 0 ? $this->findServerName($this->tld) : $servername;
-        $this->response = $this->invoke($this->socket, $domain, $this->servername);
+        $this->tld = get_tld($this->domain);
+        $this->servername = $servername ?: $this->findServerName($this->tld);
+        $this->response = $this->invoke($this->domain, $this->servername);
 
-        $registrarServer = $this->response->servername();
-
-        if (CcTLDList::exists($this->tld) || strlen($registrarServer) === 0) {
+        $servername = $this->response->servername();
+        if (CcTLDList::exists($this->tld) || strlen($servername) === 0) {
             return $this;
         }
 
-        if ($this->response->isRegistered() && $registrarServer !== $this->servername) {
-            return $this->query($domain, $registrarServer);
+        if ($this->response->isRegistered() && $servername !== $this->servername) {
+            return $this->query($this->domain, $servername);
         }
 
         return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withQuery(string $domain, string $servername = '')
-    {
-        return (new self($this->socket, $this->response))->query($domain, $servername);
     }
 
     /**
@@ -88,7 +89,7 @@ final class Whois implements WhoisInterface
     /**
      * {@inheritDoc}
      */
-    public function result(): ResponseParserInterface
+    public function response(): ResponseParserInterface
     {
         return $this->response;
     }
@@ -106,7 +107,7 @@ final class Whois implements WhoisInterface
             return ServersList::get($tld);
         }
 
-        $servername = $this->invoke($this->socket, $tld, 'whois.iana.org')->servername();
+        $servername = $this->invoke($tld, 'whois.iana.org')->servername();
         if (strlen($servername) > 0) {
             return $servername;
         }
@@ -117,13 +118,14 @@ final class Whois implements WhoisInterface
     /**
      * Return a ResponseParser with whois result.
      *
-     * @param SocketInterface $socket
-     * @param string          $domain
-     * @param string          $servername
+     * @param string $domain
+     * @param string $servername
      * @return ResponseParserInterface
      */
-    private function invoke(SocketInterface $socket, string $domain, string $servername)
+    private function invoke(string $domain, string $servername)
     {
-        return ($this->response)($socket($servername, $domain));
+        $request = $this->socket->__invoke($servername, $domain);
+
+        return ($this->response)($request->read());
     }
 }
