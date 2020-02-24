@@ -11,14 +11,9 @@ use Generator;
  */
 interface SocketInterface
 {
-    /** @var int open error. */
-    public const ERROR_OPEN = 100;
-
-    /** @var int puts error. */
-    public const ERROR_PUTS = 101;
-
-    /** @var int request error. */
-    public const ERROR_REQUEST = 102;
+    public const ERROR_OPEN = 10;
+    public const ERROR_PUTS = 11;
+    public const ERROR_REQUEST = 12;
 
     /**
      * SocketInterface constructor.
