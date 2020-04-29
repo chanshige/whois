@@ -1,16 +1,21 @@
 <?php
 
-namespace Chanshige;
-
-use Chanshige\Constants\ResponseParserInterface;
+namespace Chanshige\Constants;
 
 /**
  * Interface WhoisInterface
  *
- * @package Chanshige
+ * @package Chanshige\Constants
  */
 interface WhoisInterface
 {
+    /**
+     * Return a whois request information.
+     *
+     * @return array
+     */
+    public function info(): array;
+
     /**
      * Connect to the necessary servers to perform a domain whois query.
      *

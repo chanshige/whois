@@ -4,7 +4,8 @@
   "keywords": [
     "whois",
     "domain",
-    "nic"
+    "nic",
+    "auradi"
   ],
   "type": "library",
   "license": "MIT",
@@ -16,10 +17,11 @@
   ],
   "autoload": {
     "files": [
-      "extend.functions.php"
+      "src/globals.php"
     ],
     "psr-4": {
-      "Chanshige\\": "src/"
+      "Chanshige\\": "src/",
+      "Chanshige\\Di\\": "di/"
     }
   },
   "autoload-dev": {
@@ -28,12 +30,13 @@
     }
   },
   "require": {
-    "php": ">=7.2"
+    "php": ">=7.3",
+    "aura/di": "^4.0"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "*",
     "phpmd/phpmd": "*",
-    "phpunit/phpunit": "^7.0"
+    "phpunit/phpunit": "^9.0"
   },
   "scripts": {
     "test": [

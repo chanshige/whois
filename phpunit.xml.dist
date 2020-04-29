@@ -16,7 +16,7 @@
         <whitelist>
             <directory suffix=".php">src</directory>
             <exclude>
-                <directory suffix=".php">src/Foundation/Handler</directory>
+                <directory suffix=".php">src/Handler</directory>
             </exclude>
         </whitelist>
     </filter>

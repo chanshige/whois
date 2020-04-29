@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Chanshige\Foundation\Handler;
+namespace Chanshige\Handler;
 
 use Chanshige\Exception\SocketException;
 use Generator;

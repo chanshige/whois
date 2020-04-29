@@ -1,7 +1,10 @@
 <?php
+
 namespace Chanshige;
 
+use Chanshige\Exception\InvalidQueryException;
 use Chanshige\Fake\SocketStub;
+use Chanshige\Handler\Socket;
 
 /**
  * Class WhoisTest
@@ -16,23 +19,12 @@ class WhoisTest extends CommonTestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->whois = new Whois(new SocketStub);
+        $this->whois = new Whois(new SocketStub(), new Response());
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function tearDown()
-    {
-        parent::tearDown();
-    }
-
-    /**
-     * @throws \Chanshige\Exception\InvalidQueryException
-     */
     public function testQueryRaw()
     {
         $response = $this->whois->query(
@@ -42,13 +34,10 @@ class WhoisTest extends CommonTestCase
 
         $this->assertEquals(
             'Domain Name: chanshige.com.stub',
-            $response->result()->raw()[2]
+            $response->response()->raw()[2]
         );
     }
 
-    /**
-     * @throws \Chanshige\Exception\InvalidQueryException
-     */
     public function testQueryResults()
     {
         $response = $this->whois->query(
@@ -86,45 +75,28 @@ class WhoisTest extends CommonTestCase
             '',
         ];
 
-        $this->assertEquals($expected, $response->result()->raw());
+        $this->assertEquals($expected, $response->response()->raw());
     }
 
     public function testRequestCcTld()
     {
         $response = $this->whois->query('chanshige.miyazaki.jp');
-        $this->assertEquals('Domain Name: miyazaki.jp', $response->result()->raw()[0]);
-
-        $info = [
-            'domain' => 'chanshige.miyazaki.jp',
-            'servername' => 'whois.miyazaki.jp.stub',
-            'tld' => 'miyazaki.jp',
-        ];
-        $this->assertEquals($info, $response->info());
-    }
-
-    public function testWithQuery()
-    {
-        $query = $this->whois->query('chanshige.com.stub');
-        $withQuery = $this->whois->withQuery('chanshige.com.stub');
-
-        $this->assertIsObject($withQuery);
-        $this->assertNotSame($withQuery, $query);
-        $this->assertInstanceOf('Chanshige\Whois', $withQuery);
+        $this->assertEquals('Domain Name: miyazaki.jp', $response->response()->raw()[0]);
     }
 
     public function testRequest()
     {
-        $whois = new Whois();
-        $result = $whois->query('tanakashigeki.com')->result();
-        $this->assertInstanceOf('Chanshige\Foundation\ResponseParserInterface', $result);
+        $whois = new Whois(new Socket(), new Response());
+        $result = $whois->query('tanakashigeki.com')->response();
+        $this->assertInstanceOf('Chanshige\Constants\ResponseParserInterface', $result);
     }
 
-    /**
-     * @expectedException \Chanshige\Exception\InvalidQueryException
-     * @expectedExceptionMessage Could not find to example whois server from iana database.
-     */
     public function testNotFind()
     {
-        (new Whois)->query('example.example');
+        $this->expectExceptionMessage("Could not find to example whois server from iana database.");
+        $this->expectException(InvalidQueryException::class);
+
+        $whois = new Whois(new Socket(), new Response());
+        $whois->query('example.example');
     }
 }

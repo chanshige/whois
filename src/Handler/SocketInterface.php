@@ -1,15 +1,15 @@
 <?php
-namespace Chanshige\Foundation\Handler;
+
+namespace Chanshige\Handler;
 
 use Generator;
-use IteratorAggregate;
 
 /**
  * Interface SocketInterface
  *
  * @package Chanshige\Handler
  */
-interface SocketInterface extends IteratorAggregate
+interface SocketInterface
 {
     public const ERROR_OPEN = 10;
     public const ERROR_PUTS = 11;

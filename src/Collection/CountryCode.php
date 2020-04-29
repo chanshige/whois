@@ -1,17 +1,24 @@
 <?php
+/*
+ * This file is part of the Chanshige\Whois package.
+ *
+ * (c) shigeki tanaka <dev@shigeki.tokyo>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 declare(strict_types=1);
 
-namespace Chanshige\Foundation;
-
-use Chanshige\Foundation\Collection\ArrayList;
+namespace Chanshige\Collection;
 
 /**
- * Class CcTLDList
+ * Class CountryCode
  *
- * @package Chanshige\Foundation\Collection
+ * @package Chanshige\Collection
  */
-final class CcTLDList extends ArrayList
+final class CountryCode extends AbstractCollection
 {
+    /** @var string[] */
     protected static $data = [
         'jp',
         'co.jp',
@@ -20,6 +27,7 @@ final class CcTLDList extends ArrayList
         'ac.jp',
         'ed.jp',
         'go.jp',
+        'ad.jp',
         'hokkaido.jp',
         'miyagi.jp',
         'fukushima.jp',

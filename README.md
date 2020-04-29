@@ -1,4 +1,4 @@
-[![Packagist](https://img.shields.io/badge/packagist-v4.0.0-blue.svg)](https://packagist.org/packages/chanshige/whois)
+[![Packagist](https://img.shields.io/badge/packagist-v5.0.0-blue.svg)](https://packagist.org/packages/chanshige/whois)
 [![Build Status](https://travis-ci.org/chanshige/whois.svg?branch=master)](https://travis-ci.org/chanshige/whois)
 [![Coverage Status](https://coveralls.io/repos/github/chanshige/whois/badge.svg?branch=master)](https://coveralls.io/github/chanshige/whois?branch=master)
 
@@ -10,38 +10,21 @@ domain registered information(whois) search.
 ## Installation
 With Composer
 ```
-$ composer require chanshige/whois 'v4.0'
+$ composer require chanshige/whois 'v5.0'
 ```
 
 ## usage
 ```php
 <?php
-use Chanshige\Foundation\Handler\Socket;
-use Chanshige\Foundation\ResponseParser;
-use Chanshige\Foundation\ResponseParserInterface;
-use Chanshige\Whois;
+use Chanshige\WhoisFactory;
+use Chanshige\WhoisInterface;
 
-$config = [
-    'port' => 43,
-    'timeout' => 5,
-    'retry_count' => 3
-];
-
-// 
-$whois = new Whois(new Socket($config), new ResponseParser);
-
-// ※ Socket/ResponseParserは省略できます
-$whois = new Whois;
-
-$whois->query('domain-name.example', 'whois.server.fqdn');
-
-// ※ whois serverの指定も省略可能です。（tldからserver名を自動判定します)
+$whois = (new WhoisFactory())->build();
+/** @see WhoisInterface */
 $whois->query('domain-name.example');
 
-/** @var ResponseParserInterface $response */
-$response = $whois->result();
+$response = $whois->response();
 $response->raw(); // return a whois raw data.
-?>
 ```
 
 ## ResponseParserInterface methods
