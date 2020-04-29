@@ -9,6 +9,8 @@
  */
 declare(strict_types=1);
 
+namespace Chanshige;
+
 if (!function_exists('get_tld')) {
     /**
      * Get Tld From DomainName.

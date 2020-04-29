@@ -1,6 +1,6 @@
 <?php
 
-namespace Chanshige\Foundation\Handler;
+namespace Chanshige\Handler;
 
 use Generator;
 

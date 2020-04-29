@@ -1,24 +1,34 @@
 <?php
-namespace Chanshige\Foundation;
+/*
+ * This file is part of the Chanshige\Whois package.
+ *
+ * (c) shigeki tanaka <dev@shigeki.tokyo>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+declare(strict_types=1);
 
+namespace Chanshige;
+
+use Chanshige\Constants\ResponseParserInterface;
 use Traversable;
-use function preg_grep_values;
 
 /**
- * Class ResponseParser
+ * Class Response
  *
- * @package Chanshige\Foundation
+ * @package Chanshige
  */
-final class ResponseParser implements ResponseParserInterface
+class Response implements ResponseParserInterface
 {
     /** @var array */
     private $input = [];
 
     /**
-     * @param iterable $input
+     * @param Traversable $input
      * @return ResponseParserInterface
      */
-    public function __invoke(iterable $input): ResponseParserInterface
+    public function __invoke(Traversable $input): ResponseParserInterface
     {
         $this->input = $input instanceof Traversable ?
             iterator_to_array($input) : $input;
@@ -167,5 +177,14 @@ final class ResponseParser implements ResponseParserInterface
     public function raw(): array
     {
         return $this->input;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __clone()
+    {
+        // initialize
+        $this->input = [];
     }
 }

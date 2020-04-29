@@ -2,8 +2,8 @@
 namespace Chanshige\Fake;
 
 use Chanshige\Exception\SocketException;
-use Chanshige\Foundation\Handler\Socket;
-use Chanshige\Foundation\Handler\SocketInterface;
+use Chanshige\Handler\Socket;
+use Chanshige\Handler\SocketInterface;
 use Generator;
 
 /**
@@ -55,7 +55,7 @@ class SocketStub extends Socket
 
     public function puts(string $value): SocketInterface
     {
-        if (!ResultSample::has($value) && is_null($this->resource)) {
+        if (!ResultSample::hasKey($value) && is_null($this->resource)) {
             throw new SocketException('Write to socket failed.', SocketInterface::ERROR_PUTS);
         }
         $this->domain = $value;

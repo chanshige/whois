@@ -5,7 +5,7 @@
     "whois",
     "domain",
     "nic",
-    "di"
+    "auradi"
   ],
   "type": "library",
   "license": "MIT",
@@ -17,7 +17,7 @@
   ],
   "autoload": {
     "files": [
-      "src/Foundation/globals.php"
+      "src/globals.php"
     ],
     "psr-4": {
       "Chanshige\\": "src/",
@@ -30,13 +30,13 @@
     }
   },
   "require": {
-    "php": ">=7.2",
+    "php": ">=7.3",
     "aura/di": "^4.0"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "*",
     "phpmd/phpmd": "*",
-    "phpunit/phpunit": "^7.0"
+    "phpunit/phpunit": "^9.0"
   },
   "scripts": {
     "test": [

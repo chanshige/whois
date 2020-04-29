@@ -4,10 +4,10 @@ namespace Chanshige\Di;
 
 use Aura\Di\Container;
 use Aura\Di\ContainerConfig;
-use Chanshige\Foundation\Handler\Socket;
-use Chanshige\Foundation\Handler\SocketInterface;
-use Chanshige\Foundation\ResponseParser;
-use Chanshige\Foundation\ResponseParserInterface;
+use Chanshige\Constants\ResponseParserInterface;
+use Chanshige\Handler\Socket;
+use Chanshige\Handler\SocketInterface;
+use Chanshige\Response;
 
 /**
  * Class Config
@@ -22,6 +22,6 @@ class AuraConfig extends ContainerConfig
     public function define(Container $di): void
     {
         $di->types[SocketInterface::class] = $di->lazyNew(Socket::class);
-        $di->types[ResponseParserInterface::class] = $di->lazyNew(ResponseParser::class);
+        $di->types[ResponseParserInterface::class] = $di->lazyNew(Response::class);
     }
 }

@@ -1,14 +1,14 @@
 <?php
 namespace Chanshige\Fake;
 
-use Chanshige\Foundation\Collection\ArrayList;
+use Chanshige\Collection\AbstractCollection;
 
 /**
  * Class ResultSample
  *
  * @package Chanshige\Fake
  */
-class ResultSample extends ArrayList
+class ResultSample extends AbstractCollection
 {
     protected static $data = [
         'chanshige.com.stub' => [

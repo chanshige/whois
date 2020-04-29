@@ -9,17 +9,16 @@
  */
 declare(strict_types=1);
 
-namespace Chanshige\Foundation;
-
-use Chanshige\Foundation\Collection\ArrayList;
+namespace Chanshige\Collection;
 
 /**
- * Class ServersList
+ * Class Servers
  *
- * @package Chanshige\Foundation\Collection
+ * @package Chanshige\Collection
  */
-final class ServersList extends ArrayList
+class Servers extends AbstractCollection
 {
+    /** @var string[] */
     protected static $data = [
         'com' => 'whois.internic.net',
         'net' => 'whois.internic.net',

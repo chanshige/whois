@@ -9,14 +9,14 @@
  */
 declare(strict_types=1);
 
-namespace Chanshige\Foundation\Collection;
+namespace Chanshige\Collection;
 
 /**
- * Class ArrayList
+ * Class AbstractCollection
  *
- * @package Chanshige\Foundation\Collection
+ * @package Chanshige\Collection
  */
-abstract class ArrayList
+abstract class AbstractCollection
 {
     /** @var array */
     protected static $data = [];
@@ -39,7 +39,7 @@ abstract class ArrayList
      * @param mixed $key
      * @return bool
      */
-    final public static function has($key): bool
+    final public static function hasKey($key): bool
     {
         return isset(static::$data[$key]);
     }
@@ -50,7 +50,7 @@ abstract class ArrayList
      * @param mixed $value
      * @return bool
      */
-    final public static function exists($value): bool
+    final public static function existsValue($value): bool
     {
         return in_array($value, static::$data, true);
     }
