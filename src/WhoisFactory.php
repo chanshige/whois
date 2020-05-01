@@ -14,6 +14,7 @@ namespace Chanshige;
 use Aura\Di\Container;
 use Aura\Di\ContainerBuilder;
 use Aura\Di\Exception\SetterMethodNotFound;
+use Chanshige\Constants\WhoisInterface;
 use Chanshige\Di\AuraConfig;
 use LogicException;
 
