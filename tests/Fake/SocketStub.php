@@ -44,7 +44,7 @@ class SocketStub extends Socket
         if (!in_array($host, [
             'whois.iana.org',
             'whois.com.stub',
-            'whois.miyazaki.jp.stub'
+            'whois.miyazaki.jp.stub',
         ])) {
             throw new SocketException('Failed to open socket connection.', SocketInterface::ERROR_OPEN);
         }

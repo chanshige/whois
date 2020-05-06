@@ -99,4 +99,140 @@ class WhoisTest extends CommonTestCase
         $whois = new Whois(new Socket(), new Response());
         $whois->query('example.example');
     }
+
+    public function testResponseByStatus()
+    {
+        $whois = $this->whois->query(
+            'chanshige.com.stub',
+            'whois.com.stub'
+        );
+
+        $this->assertEquals(
+            [
+                'Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited',
+            ],
+            $whois->response()->status()
+        );
+    }
+
+    public function testResponseByRegistrant()
+    {
+        $whois = $this->whois->query(
+            'chanshige.com.stub',
+            'whois.com.stub'
+        );
+
+        $this->assertEquals(
+            [
+                'Registrant Name: NIC',
+                'Registrant Organization: NIC',
+            ],
+            $whois->response()->registrant()
+        );
+    }
+
+    public function testResponseByAdmin()
+    {
+        $whois = $this->whois->query(
+            'chanshige.com.stub',
+            'whois.com.stub'
+        );
+
+        $this->assertEquals(
+            [
+                'Admin Name: Semonche, Douglas',
+                'Admin Organization: Network Infiormation Center (NIC), LLC',
+            ],
+            $whois->response()->admin()
+        );
+    }
+
+    public function testResponseByBilling()
+    {
+        $whois = $this->whois->query(
+            'chanshige.com.stub',
+            'whois.com.stub'
+        );
+
+        $this->assertEquals([], $whois->response()->billing());
+    }
+
+    public function testResponseByTech()
+    {
+        $whois = $this->whois->query(
+            'chanshige.com.stub',
+            'whois.com.stub'
+        );
+
+        $this->assertEquals(
+            [
+                'Tech Name: Semonche, Douglas',
+                'Tech Organization: Network Infiormation Center (NIC), LLC',
+            ],
+            $whois->response()->tech()
+        );
+    }
+
+    public function testResponseByDates()
+    {
+        $whois = $this->whois->query(
+            'chanshige.com.stub',
+            'whois.com.stub'
+        );
+
+        $this->assertEquals(
+            [
+                'Updated Date: 2018-03-02T17:00:22Z',
+                'Creation Date: 1994-02-07T05:00:00Z',
+                'Registrar Registration Expiration Date: 2028-02-08T05:00:00Z',
+            ],
+            $whois->response()->dates()
+        );
+    }
+
+    public function testResponseByNameserver()
+    {
+        $whois = $this->whois->query(
+            'chanshige.com.stub',
+            'whois.com.stub'
+        );
+
+        $this->assertEquals(
+            [
+                'Name Server: BACKUP.NIC.COM',
+                'Name Server: SUE.NIC.COM',
+            ],
+            $whois->response()->nameserver()
+        );
+    }
+
+    public function testResponseByIsClientHold()
+    {
+        $whois = $this->whois->query(
+            'chanshige.com.stub',
+            'whois.com.stub'
+        );
+
+        $this->assertFalse($whois->response()->isClientHold());
+    }
+
+    public function testResponseByIsReserved()
+    {
+        $whois = $this->whois->query(
+            'chanshige.com.stub',
+            'whois.com.stub'
+        );
+
+        $this->assertFalse($whois->response()->isReserved());
+    }
+
+    public function testResponseByNotFound()
+    {
+        $whois = $this->whois->query(
+            'notfound.com.stub',
+            'whois.com.stub'
+        );
+
+        $this->assertFalse($whois->response()->isRegistered());
+    }
 }

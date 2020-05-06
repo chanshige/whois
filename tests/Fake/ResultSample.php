@@ -40,6 +40,9 @@ class ResultSample extends AbstractCollection
             '>>> Last update of WHOIS database: 2018-04-23T15:37:52Z <<<',
             '',
         ],
+        'notfound.com.stub' => [
+            'No match for "notfound.com.stub".'
+        ],
         'chanshige.miyazaki.jp' => [
             'Domain Name: miyazaki.jp',
         ],

@@ -14,7 +14,7 @@ namespace Chanshige;
 use Aura\Di\Container;
 use Aura\Di\ContainerBuilder;
 use Aura\Di\Exception\SetterMethodNotFound;
-use Chanshige\Di\AuraConfig;
+use Chanshige\Aura\Config;
 use LogicException;
 
 /**
@@ -39,7 +39,7 @@ final class WhoisFactory
     {
         try {
             return (new ContainerBuilder())->newConfiguredInstance(
-                [AuraConfig::class],
+                [Config::class],
                 ContainerBuilder::AUTO_RESOLVE
             );
         } catch (SetterMethodNotFound $e) {
