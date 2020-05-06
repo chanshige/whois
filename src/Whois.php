@@ -14,6 +14,7 @@ namespace Chanshige;
 use Chanshige\Collection\CountryCode;
 use Chanshige\Collection\Servers;
 use Chanshige\Constants\ResponseParserInterface;
+use Chanshige\Constants\WhoisInterface;
 use Chanshige\Exception\InvalidQueryException;
 use Chanshige\Handler\SocketInterface;
 
