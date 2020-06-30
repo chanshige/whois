@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Chanshige;
 
-use Chanshige\Constants\ResponseParserInterface;
+use Chanshige\Contracts\ResponseParserInterface;
 use Traversable;
 
 /**

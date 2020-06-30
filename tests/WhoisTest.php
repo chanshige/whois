@@ -88,7 +88,7 @@ class WhoisTest extends CommonTestCase
     {
         $whois = new Whois(new Socket(), new Response());
         $result = $whois->query('tanakashigeki.com')->response();
-        $this->assertInstanceOf('Chanshige\Constants\ResponseParserInterface', $result);
+        $this->assertInstanceOf('Chanshige\Contracts\ResponseParserInterface', $result);
     }
 
     public function testNotFind()
