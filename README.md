@@ -17,7 +17,7 @@ $ composer require chanshige/whois 'v5.0'
 ```php
 <?php
 use Chanshige\WhoisFactory;
-use Chanshige\Constants\WhoisInterface;
+use Chanshige\Contracts\WhoisInterface;
 
 $whois = (new WhoisFactory())->newInstance();
 /** @see WhoisInterface */

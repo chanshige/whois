@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Chanshige;
 
-use Chanshige\Constants\WhoisInterface;
+use Chanshige\Contracts\WhoisInterface;
 use Chanshige\Handler\Socket;
 
 /**
