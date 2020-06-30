@@ -29,8 +29,7 @@
     }
   },
   "require": {
-    "php": ">=7.3",
-    "aura/di": "^4.0"
+    "php": ">=7.3"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "*",

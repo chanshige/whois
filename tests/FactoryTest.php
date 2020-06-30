@@ -9,9 +9,9 @@ namespace Chanshige;
  */
 class FactoryTest extends CommonTestCase
 {
-    public function testWhoisFactoryBuild()
+    public function testWhoisFactory()
     {
-        $whois = (new WhoisFactory())->build();
+        $whois = (new WhoisFactory())->newInstance();
         $this->assertInstanceOf('Chanshige\Whois', $whois);
     }
 }

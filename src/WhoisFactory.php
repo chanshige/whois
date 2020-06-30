@@ -11,12 +11,8 @@ declare(strict_types=1);
 
 namespace Chanshige;
 
-use Aura\Di\Container;
-use Aura\Di\ContainerBuilder;
-use Aura\Di\Exception\SetterMethodNotFound;
-use Chanshige\Constants\WhoisInterface;
-use Chanshige\Aura\Config;
-use LogicException;
+use Chanshige\Contracts\WhoisInterface;
+use Chanshige\Handler\Socket;
 
 /**
  * Class WhoisFactory
@@ -26,25 +22,21 @@ use LogicException;
 final class WhoisFactory
 {
     /**
-     * @return object|WhoisInterface
+     * Return a whois library object.
+     *
+     * @return WhoisInterface
      */
-    public function build()
+    public function newInstance()
     {
-        return $this->container()->newInstance(Whois::class);
+        return new Whois(new Socket(), new Response());
     }
 
     /**
-     * @return Container
+     * @return WhoisInterface
+     * @deprecated
      */
-    private function container()
+    public function build()
     {
-        try {
-            return (new ContainerBuilder())->newConfiguredInstance(
-                [Config::class],
-                ContainerBuilder::AUTO_RESOLVE
-            );
-        } catch (SetterMethodNotFound $e) {
-            throw new LogicException($e->getMessage());
-        }
+        return $this->newInstance();
     }
 }
