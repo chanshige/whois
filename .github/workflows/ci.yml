@@ -12,8 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-versions: [ '7.3', '7.4' ]
-        phpunit-versions: [ 'latest' ]
+        php-versions: [ '8.0' ]
     name: PHP ${{ matrix.php-versions }} Test
     steps:
       - name: checkout
@@ -27,7 +26,6 @@ jobs:
           extensions: mbstring, intl
           ini-values: post_max_size=256M, max_execution_time=180
           coverage: xdebug
-          tools: php-cs-fixer, phpunit:${{ matrix.phpunit-versions }}
 
       - name: Validate composer.json and composer.lock
         run: composer validate

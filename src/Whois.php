@@ -28,25 +28,10 @@ final class Whois implements WhoisInterface
     /** @var string */
     private const IANA_WHOIS_SERVER = 'whois.iana.org';
 
-    /** @var SocketInterface */
-    private $socket;
-
-    /** @var ResponseParserInterface */
-    private $response;
-
-    /**
-     * Whois constructor.
-     *
-     * @param SocketInterface         $socket
-     * @param ResponseParserInterface $response
-     */
     public function __construct(
-        SocketInterface $socket,
-        ResponseParserInterface $response
-    ) {
-        $this->socket = $socket;
-        $this->response = $response;
-    }
+        private SocketInterface $socket,
+        private ResponseParserInterface $response
+    ) {}
 
     /**
      * {@inheritdoc}
@@ -56,20 +41,11 @@ final class Whois implements WhoisInterface
         $tld = get_tld($domain);
         $servername = $servername ?: $this->findServerName($tld);
         $response = $this->invoke($domain, $servername);
-        // not acquired
-        if ($response->isRegistered() === false) {
+        if ($this->terminate($tld, $servername, $response)) {
             return $this;
         }
 
-        if (CountryCode::existsValue($tld) || strlen($registrar = $response->servername()) === 0) {
-            return $this;
-        }
-
-        if ($servername === $registrar) {
-            return $this;
-        }
-
-        return $this->query($domain, $registrar);
+        return $this->query($domain, $response->servername());
     }
 
     /**
@@ -108,11 +84,27 @@ final class Whois implements WhoisInterface
      * @param string $servername
      * @return ResponseParserInterface
      */
-    private function invoke(string $domain, string $servername)
+    private function invoke(string $domain, string $servername): ResponseParserInterface
     {
         $request = $this->socket->__invoke($servername, $domain);
         $this->response = clone $this->response();
 
         return ($this->response)($request->read());
+    }
+
+    /**
+     * proceed request to registrar
+     *
+     * @param string                  $tld
+     * @param string                  $servername
+     * @param ResponseParserInterface $response
+     * @return bool
+     */
+    private function terminate(string $tld, string $servername, ResponseParserInterface $response): bool
+    {
+        return $response->isRegistered() === false ||
+            CountryCode::existsValue($tld) ||
+            strlen($registrar = $response->servername()) === 0 ||
+            $servername === $registrar;
     }
 }

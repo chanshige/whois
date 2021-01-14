@@ -18,7 +18,7 @@ if (!function_exists('get_tld')) {
      * @param string $domain
      * @return string
      */
-    function get_tld($domain): string
+    function get_tld(string $domain): string
     {
         $array = explode('.', $domain, 2);
 
