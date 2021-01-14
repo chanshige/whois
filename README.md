@@ -1,6 +1,5 @@
 [![Packagist](https://img.shields.io/badge/packagist-v5.0.0-blue.svg)](https://packagist.org/packages/chanshige/whois)
-[![Build Status](https://travis-ci.org/chanshige/whois.svg?branch=master)](https://travis-ci.org/chanshige/whois)
-[![Coverage Status](https://coveralls.io/repos/github/chanshige/whois/badge.svg?branch=master)](https://coveralls.io/github/chanshige/whois?branch=master)
+![Build Status](https://github.com/chanshige/whois/workflows/CI/badge.svg?branch=master)
 
 # chanshige/whois
 domain registered information(whois) search.  
