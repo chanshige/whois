@@ -1,4 +1,13 @@
 <?php
+/*
+ * This file is part of the Chanshige\Whois package.
+ *
+ * (c) shigeki tanaka <dev@shigeki.tokyo>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+declare(strict_types=1);
 
 namespace Chanshige;
 
@@ -13,8 +22,7 @@ use Chanshige\Handler\Socket;
  */
 class WhoisTest extends CommonTestCase
 {
-    /** @var Whois */
-    private $whois;
+    private Whois $whois;
 
     /**
      * {@inheritdoc}
@@ -25,7 +33,7 @@ class WhoisTest extends CommonTestCase
         $this->whois = new Whois(new SocketStub(), new Response());
     }
 
-    public function testQueryRaw()
+    public function testQueryRaw(): void
     {
         $response = $this->whois->query(
             'chanshige.com.stub',
@@ -38,7 +46,7 @@ class WhoisTest extends CommonTestCase
         );
     }
 
-    public function testQueryResults()
+    public function testQueryResults(): void
     {
         $response = $this->whois->query(
             'chanshige.com.stub',
@@ -78,20 +86,20 @@ class WhoisTest extends CommonTestCase
         $this->assertEquals($expected, $response->response()->raw());
     }
 
-    public function testRequestCcTld()
+    public function testRequestCcTld(): void
     {
         $response = $this->whois->query('chanshige.miyazaki.jp');
         $this->assertEquals('Domain Name: miyazaki.jp', $response->response()->raw()[0]);
     }
 
-    public function testRequest()
+    public function testRequest(): void
     {
         $whois = new Whois(new Socket(), new Response());
         $result = $whois->query('tanakashigeki.com')->response();
         $this->assertInstanceOf('Chanshige\Contracts\ResponseParserInterface', $result);
     }
 
-    public function testNotFind()
+    public function testNotFind(): void
     {
         $this->expectExceptionMessage("Could not find to example whois server from iana database.");
         $this->expectException(InvalidQueryException::class);
@@ -100,7 +108,7 @@ class WhoisTest extends CommonTestCase
         $whois->query('example.example');
     }
 
-    public function testResponseByStatus()
+    public function testResponseByStatus(): void
     {
         $whois = $this->whois->query(
             'chanshige.com.stub',
@@ -115,7 +123,7 @@ class WhoisTest extends CommonTestCase
         );
     }
 
-    public function testResponseByRegistrant()
+    public function testResponseByRegistrant(): void
     {
         $whois = $this->whois->query(
             'chanshige.com.stub',
@@ -131,7 +139,7 @@ class WhoisTest extends CommonTestCase
         );
     }
 
-    public function testResponseByAdmin()
+    public function testResponseByAdmin(): void
     {
         $whois = $this->whois->query(
             'chanshige.com.stub',
@@ -147,7 +155,7 @@ class WhoisTest extends CommonTestCase
         );
     }
 
-    public function testResponseByBilling()
+    public function testResponseByBilling(): void
     {
         $whois = $this->whois->query(
             'chanshige.com.stub',
@@ -157,7 +165,7 @@ class WhoisTest extends CommonTestCase
         $this->assertEquals([], $whois->response()->billing());
     }
 
-    public function testResponseByTech()
+    public function testResponseByTech(): void
     {
         $whois = $this->whois->query(
             'chanshige.com.stub',
@@ -173,7 +181,7 @@ class WhoisTest extends CommonTestCase
         );
     }
 
-    public function testResponseByDates()
+    public function testResponseByDates(): void
     {
         $whois = $this->whois->query(
             'chanshige.com.stub',
@@ -190,7 +198,7 @@ class WhoisTest extends CommonTestCase
         );
     }
 
-    public function testResponseByNameserver()
+    public function testResponseByNameserver(): void
     {
         $whois = $this->whois->query(
             'chanshige.com.stub',
@@ -206,7 +214,7 @@ class WhoisTest extends CommonTestCase
         );
     }
 
-    public function testResponseByIsClientHold()
+    public function testResponseByIsClientHold(): void
     {
         $whois = $this->whois->query(
             'chanshige.com.stub',
@@ -216,7 +224,7 @@ class WhoisTest extends CommonTestCase
         $this->assertFalse($whois->response()->isClientHold());
     }
 
-    public function testResponseByIsReserved()
+    public function testResponseByIsReserved(): void
     {
         $whois = $this->whois->query(
             'chanshige.com.stub',
@@ -226,7 +234,7 @@ class WhoisTest extends CommonTestCase
         $this->assertFalse($whois->response()->isReserved());
     }
 
-    public function testResponseByNotFound()
+    public function testResponseByNotFound(): void
     {
         $whois = $this->whois->query(
             'notfound.com.stub',
