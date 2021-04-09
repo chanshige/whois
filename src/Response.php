@@ -139,6 +139,9 @@ class Response implements ResponseParserInterface
             'No match!!',
             'available for registration',
             'No entries found',
+            'free',
+            'AVAILABLE',
+            'available',
         ]);
 
         return count(preg_grep("/{$pattern}/mi", $this->input)) === 0;
