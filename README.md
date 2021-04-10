@@ -68,9 +68,11 @@ whois サーバー名
 ## test
 `$ composer test`  
 
+## Contributing
+Feel free to create issues and submit pull requests. For any PR submitted, make sure it is covered by tests or include new tests.
 
-## coverage
-![coverage](https://i.gyazo.com/a986d5945bdd6b9603556cee0c0f90b6.png)
+## Security
+If you discover any security related issues, please email author email instead of using the issue tracker.
 
 ## License
 MIT
