@@ -98,7 +98,7 @@ final class Whois implements WhoisInterface
             return $servername;
         }
 
-        throw new InvalidQueryException('Could not find to ' . $tld . ' whois server from iana database.');
+        throw new InvalidQueryException(sprintf('Could not find the WHOIS server name for the "%s" TLD.', $tld));
     }
 
     /**
