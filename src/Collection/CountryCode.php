@@ -93,5 +93,8 @@ final class CountryCode extends AbstractCollection
         'id',
         'tw',
         'fr',
+        'it',
+        'de',
+        'eu',
     ];
 }
