@@ -130,7 +130,7 @@ class Response implements ResponseParserInterface
      */
     public function isRegistered(): bool
     {
-        $pattern = implode("|", [
+        $pattern = implode('|', [
             'No match for',
             'NOT FOUND',
             'No Data Found',
@@ -143,7 +143,7 @@ class Response implements ResponseParserInterface
             '^(.*?)Status(:)?(\s+?)AVAILABLE',
         ]);
 
-        return count(preg_grep("/{$pattern}/i", $this->input)) === 0;
+        return count(preg_grep('/' . $pattern . '/i', $this->input)) === 0;
     }
 
     /**
@@ -153,14 +153,14 @@ class Response implements ResponseParserInterface
      */
     public function isReserved(): bool
     {
-        $pattern = implode("|", [
+        $pattern = implode('|', [
             'reserved name',
             'Reserved Domain',
             'registry reserved',
             'has been reserved',
         ]);
 
-        return count(preg_grep("/{$pattern}/mi", $this->input)) > 0;
+        return count(preg_grep('/' . $pattern . '/i', $this->input)) > 0;
     }
 
     /**
@@ -170,7 +170,7 @@ class Response implements ResponseParserInterface
      */
     public function isClientHold(): bool
     {
-        return count(preg_grep('/^(.*)Status(.*)clientHold/mi', $this->input)) > 0;
+        return count(preg_grep('/^(.*)?Status(:)?(\s+?)clientHold/i', $this->input)) > 0;
     }
 
     /**
