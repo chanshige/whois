@@ -10,61 +10,45 @@
 namespace Chanshige\Handler;
 
 use Generator;
+use IteratorAggregate;
 
 /**
  * Interface SocketInterface
  *
  * @package Chanshige\Handler
  */
-interface SocketInterface
+interface SocketInterface extends IteratorAggregate
 {
     public const ERROR_OPEN = 10;
     public const ERROR_PUTS = 11;
-    public const ERROR_REQUEST = 12;
-
-    /**
-     * SocketInterface constructor.
-     *
-     * @param array $config
-     */
-    public function __construct(array $config = []);
+    public const ERROR_EXECUTE = 12;
 
     /**
      * Invoke socket connection and write.
-     *
-     * @param string $host
-     * @param string $value
-     * @return SocketInterface
      */
-    public function __invoke(string $host, string $value);
+    public function execute(string $host, string $value): self;
 
     /**
      * Open Internet or Unix domain socket connection.
-     *
-     * @param string $host
-     * @return SocketInterface
      */
-    public function open(string $host);
+    public function open(string $host): self;
 
     /**
      * Binary-safe file write.
-     *
-     * @param string $value
-     * @return SocketInterface
      */
-    public function puts(string $value);
+    public function puts(string $value): self;
 
     /**
      * Gets line from file pointer.
-     *
-     * @return Generator
      */
     public function read(): Generator;
 
     /**
      * Closes an open file pointer.
-     *
-     * @return bool
      */
     public function close(): bool;
+
+    public function getErrorCode(): int|null;
+
+    public function getErrorMessage(): string|null;
 }

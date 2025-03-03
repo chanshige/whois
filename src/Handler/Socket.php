@@ -14,7 +14,6 @@ namespace Chanshige\Handler;
 use Chanshige\Exception\SocketException;
 use Generator;
 use Throwable;
-use Traversable;
 
 /**
  * Class Socket
@@ -26,33 +25,22 @@ class Socket implements SocketInterface
     /** @var resource */
     private $resource;
 
-    /** @var int $errno */
-    private $errno;
+    private ?int $errorCode;
 
-    /** @var string $errStr error message */
-    private $errStr;
+    private ?string $errorMessage;
 
-    /** @var array */
-    private $config = [
-        'port' => 43,
-        'timeout' => 5,
-        'retry_count' => 3
-    ];
-
-    /**
-     * Socket constructor.
-     * {@inheritDoc}
-     */
-    public function __construct(array $config = [])
-    {
-        $this->applyConfig($config);
+    public function __construct(
+        private int $port = 43,
+        private int $timeout = 5,
+        private int $retryCount = 3,
+    ) {
     }
 
     /**
      * {@inheritDoc}
      * @throws SocketException
      */
-    public function __invoke(string $host, string $value)
+    public function execute(string $host, string $value): SocketInterface
     {
         $retry = false;
         $cnt = 0;
@@ -66,7 +54,7 @@ class Socket implements SocketInterface
             }
         } while ($retry);
 
-        throw new SocketException('request failed.', Socket::ERROR_REQUEST);
+        throw new SocketException('request failed.', SocketInterface::ERROR_EXECUTE);
     }
 
     /**
@@ -75,10 +63,16 @@ class Socket implements SocketInterface
      */
     public function open(string $host): SocketInterface
     {
-        $ro = @fsockopen($host, $this->config['port'], $this->errno, $this->errStr, $this->config['timeout']);
+        $ro = @fsockopen(
+            $host,
+            $this->port,
+            $this->errorCode,
+            $this->errorMessage,
+            $this->timeout,
+        );
 
         if ($ro === false) {
-            throw new SocketException('Failed to open socket connection.', Socket::ERROR_OPEN);
+            throw new SocketException('Failed to open socket connection.', SocketInterface::ERROR_OPEN);
         }
 
         $clone = clone $this;
@@ -95,7 +89,7 @@ class Socket implements SocketInterface
     {
         $result = @fwrite($this->resource, "{$value}\r\n");
         if ($result === false) {
-            throw new SocketException('Write to socket failed.', Socket::ERROR_PUTS);
+            throw new SocketException('Write to socket failed.', SocketInterface::ERROR_PUTS);
         }
 
         return $this;
@@ -121,46 +115,33 @@ class Socket implements SocketInterface
      */
     public function close(): bool
     {
-        return !is_resource($this->resource) ?: fclose($this->resource);
+        return !is_resource($this->resource) || fclose($this->resource);
     }
 
-    /**
-     * Retrieve an external iterator.
-     *
-     * @return Traversable An instance of an object.
-     */
-    public function getIterator()
+    public function getIterator(): Generator
     {
         return $this->read();
     }
 
+    public function getErrorCode(): int|null
+    {
+        return $this->errorCode;
+    }
+
+    public function getErrorMessage(): string|null
+    {
+        return $this->errorMessage;
+    }
+
     /**
-     * @param int       $retries
-     * @param Throwable $throw
-     * @return bool
      * @throws SocketException
      */
-    private function pauseOnRetry(int $retries, Throwable $throw)
+    private function pauseOnRetry(int $retries, Throwable $throw): bool
     {
-        if ($retries <= $this->config['retry_count']) {
+        if ($retries <= $this->retryCount) {
             usleep((int)(pow(4, $retries) * 100000) + 600000);
             return true;
         }
         throw new SocketException($throw->getMessage(), $throw->getCode());
-    }
-
-    /**
-     * Apply configuration key value.
-     *
-     * @param array $config
-     */
-    private function applyConfig(array $config)
-    {
-        foreach ($config as $key => $value) {
-            if (!array_key_exists($key, $this->config)) {
-                throw new SocketException($key . ' is either not part of the configuration key name.');
-            }
-            $this->config[$key] = $value;
-        }
     }
 }
