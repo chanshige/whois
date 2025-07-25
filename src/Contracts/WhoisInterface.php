@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Chanshige\Contracts;
+namespace Chanshige\Interface;
 
 /**
  * Interface WhoisInterface
@@ -20,14 +20,14 @@ interface WhoisInterface
     /**
      * Connect to the necessary servers to perform a domain whois query.
      *
-     * @param string $domain     domain name
-     * @param string $servername whois server name [option]
+     * @param string $domain domain name
+     * @param string|null $servername whois server name [option]
      * @return WhoisInterface
      */
     public function query(string $domain, ?string $servername = null): WhoisInterface;
 
     /**
-     * Return a whois information.
+     * Return whois information.
      *
      * @return ResponseParserInterface
      */

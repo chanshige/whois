@@ -7,8 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
-namespace Chanshige\Contracts;
+namespace Chanshige\Interface;
 
 /**
  * Interface ResponseParserInterface
@@ -95,16 +96,9 @@ interface ResponseParserInterface
     public function isReserved(): bool;
 
     /**
-     * Is client hold domain.
+     * Is the client hold domain?
      *
      * @return bool
      */
     public function isClientHold(): bool;
-
-    /**
-     * Clone
-     *
-     * @return void
-     */
-    public function __clone();
 }
