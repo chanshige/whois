@@ -9,7 +9,7 @@ domain registered information(whois) search.
 ## Installation
 With Composer
 ```
-$ composer require chanshige/whois 'v5.0'
+$ composer require chanshige/whois 'v6.0'
 ```
 
 ## usage
