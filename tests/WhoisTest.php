@@ -13,9 +13,9 @@ use Chanshige\Handler\Socket;
  */
 class WhoisTest extends CommonTestCase
 {
-    public function testQueryRaw()
+    public function testQueryRaw(): void
     {
-        $whois = new Whois(new SocketStub(), new Response());
+        $whois = $this->newWhois(new SocketStub());
         $response = $whois->query(
             'chanshige.com.stub',
             'whois.com.stub'
@@ -27,9 +27,9 @@ class WhoisTest extends CommonTestCase
         );
     }
 
-    public function testQueryResults()
+    public function testQueryResults(): void
     {
-        $whois = new Whois(new SocketStub(), new Response());
+        $whois = $this->newWhois(new SocketStub());
         $response = $whois->query(
             'chanshige.com.stub',
             'whois.com.stub'
@@ -68,32 +68,32 @@ class WhoisTest extends CommonTestCase
         $this->assertEquals($expected, $response->response()->raw());
     }
 
-    public function testRequestCcTld()
+    public function testRequestCcTld(): void
     {
-        $whois = new Whois(new SocketStub(), new Response());
+        $whois = $this->newWhois(new SocketStub());
         $response = $whois->query('chanshige.miyazaki.jp');
         $this->assertEquals('Domain Name: miyazaki.jp', $response->response()->raw()[0]);
     }
 
-    public function testRequest()
+    public function testRequest(): void
     {
-        $whois = new Whois(new Socket(), new Response());
+        $whois = $this->newWhois(new Socket());
         $result = $whois->query('tanakashigeki.com')->response();
         $this->assertInstanceOf('Chanshige\Contracts\ResponseParserInterface', $result);
     }
 
-    public function testNotFind()
+    public function testNotFind(): void
     {
         $this->expectExceptionMessage('Could not find the WHOIS server name for the "example" TLD.');
         $this->expectException(InvalidQueryException::class);
 
-        $whois = new Whois(new Socket(), new Response());
+        $whois = $this->newWhois(new Socket());
         $whois->query('example.example');
     }
 
-    public function testResponseByStatus()
+    public function testResponseByStatus(): void
     {
-        $whois = new Whois(new SocketStub(), new Response());
+        $whois = $this->newWhois(new SocketStub());
         $whois = $whois->query(
             'chanshige.com.stub',
             'whois.com.stub'
@@ -107,9 +107,9 @@ class WhoisTest extends CommonTestCase
         );
     }
 
-    public function testResponseByRegistrant()
+    public function testResponseByRegistrant(): void
     {
-        $whois = new Whois(new SocketStub(), new Response());
+        $whois = $this->newWhois(new SocketStub());
         $whois = $whois->query(
             'chanshige.com.stub',
             'whois.com.stub'
@@ -124,9 +124,9 @@ class WhoisTest extends CommonTestCase
         );
     }
 
-    public function testResponseByAdmin()
+    public function testResponseByAdmin(): void
     {
-        $whois = new Whois(new SocketStub(), new Response());
+        $whois = $this->newWhois(new SocketStub());
         $whois = $whois->query(
             'chanshige.com.stub',
             'whois.com.stub'
@@ -141,9 +141,9 @@ class WhoisTest extends CommonTestCase
         );
     }
 
-    public function testResponseByBilling()
+    public function testResponseByBilling(): void
     {
-        $whois = new Whois(new SocketStub(), new Response());
+        $whois = $this->newWhois(new SocketStub());
         $whois = $whois->query(
             'chanshige.com.stub',
             'whois.com.stub'
@@ -152,9 +152,9 @@ class WhoisTest extends CommonTestCase
         $this->assertEquals([], $whois->response()->billing());
     }
 
-    public function testResponseByTech()
+    public function testResponseByTech(): void
     {
-        $whois = new Whois(new SocketStub(), new Response());
+        $whois = $this->newWhois(new SocketStub());
         $whois = $whois->query(
             'chanshige.com.stub',
             'whois.com.stub'
@@ -169,9 +169,9 @@ class WhoisTest extends CommonTestCase
         );
     }
 
-    public function testResponseByDates()
+    public function testResponseByDates(): void
     {
-        $whois = new Whois(new SocketStub(), new Response());
+        $whois = $this->newWhois(new SocketStub());
         $whois = $whois->query(
             'chanshige.com.stub',
             'whois.com.stub'
@@ -187,9 +187,9 @@ class WhoisTest extends CommonTestCase
         );
     }
 
-    public function testResponseByNameserver()
+    public function testResponseByNameserver(): void
     {
-        $whois = new Whois(new SocketStub(), new Response());
+        $whois = $this->newWhois(new SocketStub());
         $whois = $whois->query(
             'chanshige.com.stub',
             'whois.com.stub'
@@ -204,9 +204,9 @@ class WhoisTest extends CommonTestCase
         );
     }
 
-    public function testResponseByIsClientHold()
+    public function testResponseByIsClientHold(): void
     {
-        $whois = new Whois(new SocketStub(), new Response());
+        $whois = $this->newWhois(new SocketStub());
         $whois = $whois->query(
             'chanshige.com.stub',
             'whois.com.stub'
@@ -215,9 +215,9 @@ class WhoisTest extends CommonTestCase
         $this->assertFalse($whois->response()->isClientHold());
     }
 
-    public function testResponseByIsReserved()
+    public function testResponseByIsReserved(): void
     {
-        $whois = new Whois(new SocketStub(), new Response());
+        $whois = $this->newWhois(new SocketStub());
         $whois = $whois->query(
             'chanshige.com.stub',
             'whois.com.stub'
@@ -226,9 +226,9 @@ class WhoisTest extends CommonTestCase
         $this->assertFalse($whois->response()->isReserved());
     }
 
-    public function testResponseByNotFound()
+    public function testResponseByNotFound(): void
     {
-        $whois = new Whois(new SocketStub(), new Response());
+        $whois = $this->newWhois(new SocketStub());
         $whois = $whois->query(
             'notfound.com.stub',
             'whois.com.stub'

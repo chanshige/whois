@@ -10,7 +10,7 @@ use Chanshige\Collection\AbstractCollection;
  */
 class ResultSample extends AbstractCollection
 {
-    protected static $data = [
+    protected static array $data = [
         'chanshige.com.stub' => [
             '',
             '',
@@ -43,7 +43,7 @@ class ResultSample extends AbstractCollection
         'notfound.com.stub' => [
             'No match for "notfound.com.stub".'
         ],
-        'chanshige.miyazaki.jp' => [
+        'chanshige.miyazaki.jp/e' => [
             'Domain Name: miyazaki.jp',
         ],
         'com.stub' => [

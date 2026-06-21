@@ -10,6 +10,8 @@
 
 namespace Chanshige\Contracts;
 
+use Traversable;
+
 /**
  * Interface ResponseParserInterface
  *
@@ -17,6 +19,8 @@ namespace Chanshige\Contracts;
  */
 interface ResponseParserInterface
 {
+    public function __invoke(Traversable $input): ResponseParserInterface;
+
     /**
      * Raw
      *
@@ -100,11 +104,4 @@ interface ResponseParserInterface
      * @return bool
      */
     public function isClientHold(): bool;
-
-    /**
-     * Clone
-     *
-     * @return void
-     */
-    public function __clone();
 }

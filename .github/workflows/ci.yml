@@ -9,19 +9,19 @@ on:
       - develop
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     strategy:
       matrix:
-        php-versions: [ '7.3', '7.4' ]
+        php-versions: [ '8.4', '8.5' ]
         phpunit-versions: [ 'latest' ]
     name: PHP ${{ matrix.php-versions }} Test
     steps:
       - name: checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2.73.2
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: mbstring, intl
@@ -34,7 +34,7 @@ jobs:
 
       - name: Cache Composer packages
         id: composer-cache
-        uses: actions/cache@v5
+        uses: actions/cache@v4
         with:
           path: vendor
           key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}

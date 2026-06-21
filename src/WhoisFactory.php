@@ -26,17 +26,17 @@ final class WhoisFactory
      *
      * @return WhoisInterface
      */
-    public function newInstance()
+    public function newInstance(): WhoisInterface
     {
-        return new Whois(new Socket(), new Response());
-    }
+        $responseFactory = new ResponseFactory();
+        $client = new WhoisClient(new Socket(), $responseFactory);
 
-    /**
-     * @return WhoisInterface
-     * @deprecated
-     */
-    public function build()
-    {
-        return $this->newInstance();
+        return new Whois(
+            $client,
+            new ServerResolver($client),
+            new DomainNormalizer(),
+            new WhoisRequestFormatter(),
+            $responseFactory
+        );
     }
 }

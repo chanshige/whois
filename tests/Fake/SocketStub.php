@@ -13,28 +13,16 @@ use Generator;
  */
 class SocketStub extends Socket
 {
-    /** @var resource */
-    private $resource;
+    private ?string $resource = null;
 
-    /** @var string $domain */
-    private $domain;
-
-    /**
-     * SocketStub constructor.
-     *
-     * @param array $config
-     */
-    public function __construct(array $config = [])
-    {
-        parent::__construct($config);
-    }
+    private string $domain = '';
 
     /**
      * @param string $host
      * @param string $value
      * @return SocketInterface
      */
-    public function __invoke(string $host, string $value)
+    public function __invoke(string $host, string $value): SocketInterface
     {
         return parent::__invoke($host, $value);
     }
@@ -55,7 +43,7 @@ class SocketStub extends Socket
 
     public function puts(string $value): SocketInterface
     {
-        if (!ResultSample::hasKey($value) && is_null($this->resource)) {
+        if (!ResultSample::hasKey($value) && $this->resource === null) {
             throw new SocketException('Write to socket failed.', SocketInterface::ERROR_PUTS);
         }
         $this->domain = $value;
