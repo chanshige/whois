@@ -23,17 +23,14 @@ use Traversable;
  */
 class Socket implements SocketInterface
 {
-    /** @var resource */
-    private $resource;
+    /** @var resource|null */
+    private $resource = null;
 
-    /** @var int $errno */
-    private $errno;
+    private int $errno = 0;
 
-    /** @var string $errStr error message */
-    private $errStr;
+    private string $errStr = '';
 
-    /** @var array */
-    private $config = [
+    private array $config = [
         'port' => 43,
         'timeout' => 5,
         'retry_count' => 3
@@ -52,7 +49,7 @@ class Socket implements SocketInterface
      * {@inheritDoc}
      * @throws SocketException
      */
-    public function __invoke(string $host, string $value)
+    public function __invoke(string $host, string $value): SocketInterface
     {
         $retry = false;
         $cnt = 0;
@@ -60,9 +57,8 @@ class Socket implements SocketInterface
             try {
                 return $this->open($host)->puts($value);
             } catch (SocketException $e) {
-                $retry = $this->pauseOnRetry($cnt++, $e);
-            } finally {
                 $this->close();
+                $retry = $this->pauseOnRetry($cnt++, $e);
             }
         } while ($retry);
 
@@ -81,10 +77,9 @@ class Socket implements SocketInterface
             throw new SocketException('Failed to open socket connection.', Socket::ERROR_OPEN);
         }
 
-        $clone = clone $this;
-        $clone->resource = $ro;
+        $this->resource = $ro;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -93,6 +88,10 @@ class Socket implements SocketInterface
      */
     public function puts(string $value): SocketInterface
     {
+        if (!is_resource($this->resource)) {
+            throw new SocketException('Socket connection has not been opened.', Socket::ERROR_PUTS);
+        }
+
         $result = @fwrite($this->resource, "{$value}\r\n");
         if ($result === false) {
             throw new SocketException('Write to socket failed.', Socket::ERROR_PUTS);
@@ -106,6 +105,10 @@ class Socket implements SocketInterface
      */
     public function read(): Generator
     {
+        if (!is_resource($this->resource)) {
+            return;
+        }
+
         while (!feof($this->resource)) {
             $buffer = fgets($this->resource);
             if ($buffer === false) {
@@ -121,7 +124,14 @@ class Socket implements SocketInterface
      */
     public function close(): bool
     {
-        return !is_resource($this->resource) ?: fclose($this->resource);
+        if (!is_resource($this->resource)) {
+            return true;
+        }
+
+        $result = fclose($this->resource);
+        $this->resource = null;
+
+        return $result;
     }
 
     /**
@@ -129,7 +139,7 @@ class Socket implements SocketInterface
      *
      * @return Traversable An instance of an object.
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return $this->read();
     }
@@ -140,7 +150,7 @@ class Socket implements SocketInterface
      * @return bool
      * @throws SocketException
      */
-    private function pauseOnRetry(int $retries, Throwable $throw)
+    private function pauseOnRetry(int $retries, Throwable $throw): bool
     {
         if ($retries <= $this->config['retry_count']) {
             usleep((int)(pow(4, $retries) * 100000) + 600000);
@@ -154,7 +164,7 @@ class Socket implements SocketInterface
      *
      * @param array $config
      */
-    private function applyConfig(array $config)
+    private function applyConfig(array $config): void
     {
         foreach ($config as $key => $value) {
             if (!array_key_exists($key, $this->config)) {

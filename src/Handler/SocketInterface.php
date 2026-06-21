@@ -36,7 +36,7 @@ interface SocketInterface
      * @param string $value
      * @return SocketInterface
      */
-    public function __invoke(string $host, string $value);
+    public function __invoke(string $host, string $value): SocketInterface;
 
     /**
      * Open Internet or Unix domain socket connection.
@@ -44,7 +44,7 @@ interface SocketInterface
      * @param string $host
      * @return SocketInterface
      */
-    public function open(string $host);
+    public function open(string $host): SocketInterface;
 
     /**
      * Binary-safe file write.
@@ -52,7 +52,7 @@ interface SocketInterface
      * @param string $value
      * @return SocketInterface
      */
-    public function puts(string $value);
+    public function puts(string $value): SocketInterface;
 
     /**
      * Gets line from file pointer.

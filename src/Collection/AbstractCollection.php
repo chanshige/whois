@@ -18,17 +18,19 @@ namespace Chanshige\Collection;
  */
 abstract class AbstractCollection
 {
-    /** @var array */
-    protected static $data = [];
+    protected static array $data = [];
+
+    /** @var array<class-string, array<int|string, true>> */
+    private static array $valueMaps = [];
 
     /**
      * Get value.
      *
-     * @param mixed $key
-     * @param mixed $default
-     * @return mixed
+     * @param string|int   $key
+     * @param string|array $default
+     * @return string|array
      */
-    final public static function get($key, $default = '')
+    final public static function get(string|int $key, string|array $default = ''): string|array
     {
         return static::$data[$key] ?? $default;
     }
@@ -36,10 +38,10 @@ abstract class AbstractCollection
     /**
      * Has key.
      *
-     * @param mixed $key
+     * @param string|int $key
      * @return bool
      */
-    final public static function hasKey($key): bool
+    final public static function hasKey(string|int $key): bool
     {
         return isset(static::$data[$key]);
     }
@@ -47,12 +49,12 @@ abstract class AbstractCollection
     /**
      * Exists value.
      *
-     * @param mixed $value
+     * @param string|int $value
      * @return bool
      */
-    final public static function existsValue($value): bool
+    final public static function existsValue(string|int $value): bool
     {
-        return in_array($value, static::$data, true);
+        return isset(self::valueMap()[$value]);
     }
 
     /**
@@ -63,5 +65,25 @@ abstract class AbstractCollection
     final public static function all(): array
     {
         return static::$data;
+    }
+
+    /**
+     * @return array<int|string, true>
+     */
+    private static function valueMap(): array
+    {
+        $class = static::class;
+        if (isset(self::$valueMaps[$class])) {
+            return self::$valueMaps[$class];
+        }
+
+        $map = [];
+        foreach (static::$data as $value) {
+            if (is_int($value) || is_string($value)) {
+                $map[$value] = true;
+            }
+        }
+
+        return self::$valueMaps[$class] = $map;
     }
 }

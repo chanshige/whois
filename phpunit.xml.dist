@@ -1,23 +1,27 @@
-<phpunit bootstrap="tests/bootstrap.php">
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
+    bootstrap="tests/bootstrap.php"
+    cacheDirectory=".phpunit.cache"
+>
     <testsuites>
         <testsuite name="WhoisTests">
             <directory suffix="Test.php">tests</directory>
         </testsuite>
     </testsuites>
 
+    <source>
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+        <exclude>
+            <directory suffix=".php">src/Handler</directory>
+        </exclude>
+    </source>
+
     <logging>
-        <log type="coverage-html" target="build/coverage"/>
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
-        <log type="junit" target="build/logs/junit.xml"/>
-        <log type="coverage-crap4j" target="build/logs/crap4j.xml"/>
+        <junit outputFile="build/logs/junit.xml"/>
     </logging>
 
-    <filter>
-        <whitelist>
-            <directory suffix=".php">src</directory>
-            <exclude>
-                <directory suffix=".php">src/Handler</directory>
-            </exclude>
-        </whitelist>
-    </filter>
 </phpunit>
