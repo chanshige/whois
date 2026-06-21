@@ -29,19 +29,20 @@
     }
   },
   "require": {
-    "php": ">=7.3"
+    "ext-intl": "*",
+    "php": ">=8.4"
   },
   "require-dev": {
-    "squizlabs/php_codesniffer": "*",
-    "phpmd/phpmd": "*",
-    "phpunit/phpunit": "^9.0"
+    "squizlabs/php_codesniffer": "^3.10 || ^4.0",
+    "phpmd/phpmd": "^2.15",
+    "phpunit/phpunit": "^11.5"
   },
   "scripts": {
     "test": [
       "phpunit"
     ],
     "qa": [
-      "phpmd src text ./phpmd.xml",
+      "php -d error_reporting=8191 vendor/bin/phpmd src text ./phpmd.xml",
       "phpcs src"
     ],
     "tests": [

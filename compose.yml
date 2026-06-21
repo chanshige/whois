@@ -1,0 +1,11 @@
+services:
+  php:
+    container_name: whois-development
+    tty: true
+    build:
+      context: ./
+      dockerfile: ./.docker/Dockerfile
+    volumes:
+      - type: bind
+        source: ./
+        target: /workspace
