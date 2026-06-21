@@ -9,7 +9,7 @@ on:
       - develop
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     strategy:
       matrix:
         php-versions: [ '8.4', '8.5' ]
